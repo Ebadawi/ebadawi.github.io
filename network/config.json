@@ -10,20 +10,20 @@
   "text": {
     "more": "",
     "intro": "",
-    "title": "test"
+    "title": "BGS top cluster"
   },
   "legend": {
     "edgeLabel": "links",
     "colorLabel": "connections",
-    "nodeLabel": "domains"
+    "nodeLabel": "domains/Addresses"
   },
   "features": {
     "search": true,
-    "groupSelectorAttribute": "Label",
-    "hoverBehavior": "default"
+    "groupSelectorAttribute": false,
+    "hoverBehavior": "dim"
   },
   "informationPanel": {
-    "groupByEdgeDirection": true,
+    "groupByEdgeDirection": false,
     "imageAttribute": false
   },
   "sigma": {
