@@ -1,0 +1,343 @@
+/* ==========================================================================
+   Hassan custom styles (EpycDev)
+   ========================================================================== */
+body {
+    background-image: url(../img/bg.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+.logo {
+    max-height: 20vh;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+.hack {
+    /* background: #000000;
+    background: -webkit-linear-gradient(to bottom, #434343, #000000);
+    background: linear-gradient(to bottom, #434343, #000000); */
+    color: #ffffff;
+    border-radius: 0.5rem;
+    /* opacity: 0.9; */
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border: 2px solid #fff;
+    border-bottom: none;
+}
+h1, h2, h3, h4, h5, h6, button {
+    font-family: 'Poppins', sans-serif !important;
+    /* text-transform: uppercase; */
+    font-weight: 700;
+}
+
+p.beg.borderTop {
+    margin-top: 0 !important;
+    padding-top: 25px;
+    margin-left: -15px;
+    margin-right: -15px;
+    margin-bottom: 20px !important;
+}
+.borderTop{
+    /*border-top: 2px solid #ffffff;*/
+}
+/*.row.justify-content-center.align-items-center.borderTop {*/
+/*    padding: 35px 0;*/
+/*}*/
+.status-header {
+    font-size: 1.1rem !important;
+    font-weight: 400 !important;
+    text-transform: none !important;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #fff !important;
+    margin: 0 -14px 0 -15px !important;
+    padding: 8px 0;
+}
+.status-header img {
+    margin-right: 15px;
+}
+.hack-header {
+    margin: 0 -14px 25px -15px !important;
+    /* padding-top: 0.25rem;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    border-left: 2px solid rgba(67, 67, 67, 0.5);
+    border-top: 2px solid rgba(67, 67, 67, 0.5);
+    border-right: 2px solid rgba(67, 67, 67, 0.5);
+    border-bottom: 1px solid rgba(67, 67, 67, 0.5);
+    background-color: #ffffff; */
+    color: #ffffff;
+}
+.hack-generator {
+    font-size: 1.3rem !important;
+    color: #fff;
+    font-weight: 400 !important;
+}
+.recent-header {
+    margin-bottom: 0;
+    margin-top: 0;
+    text-transform: none !important;
+    font-size: 1.25rem !important;
+    font-weight: 400;
+    margin-left: -15px;
+    margin-right: -15px;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 10px 0;
+}
+.recent {
+    /* background-color: #ffffff; */
+    color: #ffffff;
+    opacity: 0.9;
+    border-radius: 0.5rem;
+    border: 2px solid #ffffff;
+    /*border-top: none;*/
+    /* display: none; */
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    margin-top: -0.5rem !important;
+}
+.form-control {
+    text-align: left !important;
+    font-weight: 400 !important;
+}
+#username {
+    background: transparent;
+    border: 2px solid #fff;
+    padding: 25px 15px;
+    color: #fff;
+    border-radius: 0.5rem;
+    margin-bottom: 15px;
+}
+#username::-webkit-input-placeholder {
+    color: #ffffff;
+}
+#username::-moz-placeholder {
+    color: #ffffff;
+}
+#username:-ms-input-placeholder {
+    color: #ffffff;
+}
+#username:-moz-placeholder {
+    color: #ffffff;
+}
+
+
+
+p {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+}
+.end, .ehh, .h-v {
+    display: none;
+}
+.fab, .fas {
+    cursor: pointer;
+    font-size: 3.6rem !important;
+    opacity: 0.8;
+    margin-bottom: 0 !important;
+    transition-duration: 0.5s;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    /* padding: 5px 0; */
+    /* border: 2px solid #fff; */
+}
+/* .row.justify-content-center.beg .col-sm-6:first-child {
+    padding-right: 0;
+}
+.row.justify-content-center.beg .col-sm-6:first-child .fab {
+    border-right: 0;
+    border-radius: 0.5rem 0 0 0.5rem;
+}
+.row.justify-content-center.beg .col-sm-6:last-child {
+    padding-left: 0;
+}
+.row.justify-content-center.beg .col-sm-6:last-child .fab {
+    border-left: 0;
+    border-radius: 0 0.5rem 0.5rem 0;
+} */
+.checkWrapper {
+    display: flex;
+    border: 2px solid #fff;
+    border-radius: 0.5rem;
+    padding: 6px 0;
+    margin-bottom: 15px;
+}
+.fab::before, .fas::before {
+    order: 2;
+}
+.checktext {
+    order:3;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+}
+.checkboxy {
+    order: 1;
+    width: 24px;
+    height: 24px;
+    display: block;
+    border: 2px solid #fff;
+    border-radius: 500px;
+    margin-right: 10px;
+    position: relative;
+}
+.active .checkboxy::after {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 12px;
+    height: 12px;
+    background: #58d960;
+    border-radius: 500px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+.f-username {
+    font-size: 1.7rem !important;
+    margin-top: -0.5rem !important;
+    text-transform: none !important;
+}
+.row.justify-content-center.align-items-center.borderTop .f-username {
+    margin-top: 35px !important;
+    font-size: 22px !important;
+}
+.row.justify-content-center.align-items-center.borderTop .r1r1 {
+    margin-bottom: 35px;
+}
+.i-gems {
+    background-image: url();
+}
+.i-gold {
+    background-image: url();
+}
+.i-gems, .i-gold {
+    background-repeat: no-repeat;
+    background-size: 29px 31px;
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 700;
+    background-color: transparent !important;
+    color: white !important;
+    text-align: left !important;
+    /* padding-left: 3.5rem !important; */
+    border: 2px solid #ffffff;
+    background-position: 15px center;
+    margin-bottom: 15px;
+}
+p.beg {
+    margin-bottom: 15px !important;
+}
+.final-img {
+    max-width: 75%;
+}
+.p-m {
+    cursor: pointer;
+    border: 0;
+    color: #000 !important;
+    background-color: #fff !important;
+    font-weight: 700 !important;
+    font-size: 1.8rem !important;
+    padding: 0 1rem !important;
+}
+h3 {
+    font-size: 1.4rem !important;
+}
+.btn-c {
+    font-weight: 700 !important;
+    font-size: 1.6rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: #ff2167;
+    background-color: #ffffff;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0,0.3);
+}
+.status-img {
+    margin-bottom: 3px;
+    max-height: 20px;
+}
+red {
+    font-size: 1.4rem !important;
+    color: red !important;
+}
+.typed-cursor {
+    display: none !important;
+}
+.btn-l {
+    margin-bottom: 0.5rem !important;
+}
+
+/* ==========================================================================
+   Hassan custom responsive styles (EpycDev)
+   ========================================================================== */
+@media (min-width: 576px) {
+    h4 {
+        font-size: 1.65rem !important;
+    }
+    .status-header {
+        font-size: 1.25rem !important;
+    }
+    .recent-header {
+        font-size: 1.35rem !important;
+    }
+    p {
+        font-size: 1.15rem !important;
+    }
+    .fab, .fas {
+        font-size: 4rem !important;
+    }
+    .btn-c {
+        font-size: 1.75rem !important;
+    }
+    #username {
+        font-size: 1.15rem !important;
+    }
+    .f-username {
+        font-size: 1.9rem !important;
+    }
+    .hack-generator {
+        font-size: 1.4rem !important;
+    }
+    .final-img {
+        max-width: 50%;
+    }
+}
+@media (min-width: 768px) {
+    .btn-c {
+        margin-bottom: 0;
+        font-size: 25px !important;
+    }
+    h4 {
+        font-size: 32px !important;
+    }
+    .status-header {
+        font-size: 22px !important;
+    }
+    .recent-header {
+        font-size: 22px !important;
+    }
+    .fab, .fas {
+        font-size: 32px !important;
+    }
+    #username {
+        font-size: 16px !important;
+    }
+    p {
+        font-size: 17px !important;
+    }
+    .hack-generator {
+        font-size: 1.5rem !important;
+    }
+}
+@media (min-width: 992px) {
+    .fab, .fas {
+        font-size: 32px !important;
+    }
+}
