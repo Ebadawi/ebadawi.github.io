@@ -4,109 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Veem WebSDK Integration</title>
-    //<script src="https://sandbox-js.veem.com/web-sdk.min.js"></script>
+    <script src="https://sandbox-js.veem.com/web-sdk.min.js"></script>
 </head>
 <body>
     <div id="container"></div>
 
     <script>
-      new Veem.WebSDK({
-        name: 'collectAccountInformation',
-        environment: 'sandbox',
-        target: '#container', // css selector to which the plugin will attach to
-        onExit: () => window.alert('exit'),
-        onError: (err) => console.error(err),
-        onComplete: ({ referenceId, preset, userInputs }) => { // when the flow completes, this callback will be called
-          const listString = `
-            referenceId: ${referenceId}
-            preset: ${JSON.stringify(preset, null, 2)}
-            userInputs: ${JSON.stringify(userInputs, null, 2)}
-          `
-          window.alert(listString)
-        },
-        referenceId: 'referenceId123', // referenceId that we will return with the onComplete callback (instance of the plugin)
-        preset: {            // preset you can pass in for the amount/currencyCode so you can indicate how much this instance of the plugin 
-          amount: 500,
-          currencyCode: 'USD',
-        },
-        configuration: {
-          accountId: 391558,      // accountId from the search customer via email: https://developer.veem.com/reference/searchcustomersusingget_2
-          sessionSecret: '7cdcd2682c5250d557011a6516ce6d41', // secret from the search customer via email: https://developer.veem.com/reference/searchcustomersusingget_2
-          clientId: 'testQAwhish-5XG09EeqyV',  // clientId you use for API calls
-          paymentOptions: [{ type: 'Card', header: 'Customized header' }],
-          style: {              // customized styles
-            typography: {
-              fontFamily: 'Roboto',
-              color: '#1A1A1A',
-              weight: 400,
-              fontSize: 14,
-              error: {
-                fontFamily: 'Roboto',
-                fontSize: 14,
-                weight: 400,
-                color: '#B6353B',
-              },
+        new Veem.WebSDK({
+            name: 'collectAccountInformation',
+            environment: 'sandbox',
+            target: '#container', // css selector to which the plugin will attach to
+            onExit: () => window.alert('exit'),
+            onError: (err) => console.error(err),
+            onComplete: ({ referenceId, preset, userInputs }) => { // when the flow completes, this callback will be called
+                const listString = `
+                    referenceId: ${referenceId}
+                    preset: ${JSON.stringify(preset, null, 2)}
+                    userInputs: ${JSON.stringify(userInputs, null, 2)}
+                `;
+                window.alert(listString);
             },
-            header: {
-              fontFamily: 'Roboto',
-              fontSize: 22,
-              weight: 700,
+            referenceId: 'referenceId123', // referenceId that we will return with the onComplete callback (instance of the plugin)
+            preset: { // preset you can pass in for the amount/currencyCode so you can indicate how much this instance of the plugin
+                amount: 500,
+                currencyCode: 'USD',
             },
-            input: {
-              backgroundColor: '#FFF',
-              borderColor: '#B0B7BF',
-              placeholderColor: '#B0B7BF',
-              height: 36,
-              borderRadius: 2,
-              paddingTop: 8,
-              paddingRight: 8,
-              paddingBottom: 8,
-              paddingLeft: 16,
-              error: {
-                backgroundColor: '#FFEBEC',
-                borderColor: '#B6353B',
-                placeholderColor: '#B0B7BF',
-                height: 36,
-                borderRadius: 2,
-                paddingTop: 8,
-                paddingRight: 8,
-                paddingBottom: 8,
-                paddingLeft: 16,
-              },
+            configuration: {
+                accountId: 391558, // accountId from the search customer via email: https://developer.veem.com/reference/searchcustomersusingget_2
+                sessionSecret: '7cdcd2682c5250d557011a6516ce6d41', // secret from the search customer via email: https://developer.veem.com/reference/searchcustomersusingget_2
+                clientId: 'testQAwhish-5XG09EeqyV', // clientId you use for API calls
+                paymentOptions: [{ type: 'Card', header: 'Customized header' }],
+                style: { // customized styles
+                    typography: {
+                        fontFamily: 'Roboto',
+                        color: '#1A1A1A',
+                        weight: 400,
+                        fontSize: 14,
+                        error: {
+                            fontFamily: 'Roboto',
+                            fontSize: 14,
+                            weight: 400,
+                            color: '#B6353B',
+                        },
+                    },
+                    header: {
+                        fontFamily: 'Roboto',
+                        fontSize: 22,
+                        weight: 700,
+                    },
+                    input: {
+                        backgroundColor: '#FFF',
+                        borderColor: '#B0B7BF',
+                        placeholderColor: '#B0B7BF',
+                        height: 36,
+                        borderRadius: 2,
+                        paddingTop: 8,
+                        paddingRight: 8,
+                        paddingBottom: 8,
+                        paddingLeft: 16,
+                        error: {
+                            backgroundColor: '#FFEBEC',
+                            borderColor: '#B6353B',
+                            placeholderColor: '#B0B7BF',
+                            height: 36,
+                            borderRadius: 2,
+                            paddingTop: 8,
+                            paddingRight: 8,
+                            paddingBottom: 8,
+                            paddingLeft: 16,
+                        },
+                    },
+                    button: {
+                        height: 40,
+                        minWidth: 100,
+                        padding: {
+                            top: 10,
+                            right: 24,
+                            bottom: 10,
+                            left: 24,
+                        },
+                        textTransform: 'capitalize',
+                        backgroundColor: '#1A1A1A',
+                        color: '#FFF',
+                        fontFamily: 'Roboto',
+                        fontSize: 16,
+                        weight: 600,
+                        borderRadius: 4,
+                        border: {
+                            color: '#1A1A1A',
+                            width: 1,
+                            style: 'solid',
+                        },
+                        hover: {
+                            backgroundColor: '#333333',
+                            color: '#FFF',
+                        },
+                        disabled: {
+                            backgroundColor: '#E0E0E0',
+                            color: '#B0B7BF',
+                        },
+                    },
+                },
             },
-            button: {
-              height: 40,
-              minWidth: 100,
-              padding: {
-                top: 10,
-                right: 24,
-                bottom: 10,
-                left: 24,
-              },
-              textTransform: 'capitalize',
-              backgroundColor: '#1A1A1A',
-              color: '#FFF',
-              fontFamily: 'Roboto',
-              fontSize: 16,
-              weight: 600,
-              borderRadius: 4,
-              border: {
-                color: '#1A1A1A',
-                width: 1,
-                style: 'solid',
-              },
-              hover: {
-                backgroundColor: '#333333',
-                color: '#FFF',
-              },
-              disabled: {
-                backgroundColor: '#E0E0E0',
-                color: '#B0B7BF',
-              },
-            },
-          },
-        },
-      })
+        });
     </script>
 </body>
 </html>
