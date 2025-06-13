@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Veem Card Collection Plugin</title>
+  <!-- Include the Veem Web SDK -->
+  <script src="https://unpkg.com/veem-web-sdk@^0/umd/index.min.js" type="application/javascript"></script>
+  <!-- Include Roboto font for styling -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 40px;
+      background-color: #f9f9f9;
+    }
+    #veem-collect-account {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <h2>Collect Payment Information</h2>
+  <!-- Container where the Veem plugin will be mounted -->
+  <div id="veem-collect-account"></div>
+
+  <script>
+    // Initialize the Veem Web SDK
+    new Veem.WebSDK({
+      name: 'collectAccountInformation',
+      environment: 'sandbox', // Change to 'production' for live environment
+      target: '#veem-collect-account', // CSS selector for the container
+      onExit: () => window.alert('User exited the card collection flow.'),
+      onError: (err) => console.error('Veem Plugin Error:', err),
+      onComplete: ({ referenceId, preset, userInputs }) => {
+        // Callback when the flow completes
+        const result = `
+          Reference ID: ${referenceId}
+          Preset: ${JSON.stringify(preset, null, 2)}
+          User Inputs: ${JSON.stringify(userInputs, null, 2)}
+        `;
+        window.alert(result);
+      },
+      referenceId: 'referenceId123', // Unique identifier for this plugin instance
+      preset: {
+        amount: 500,
+        currencyCode: 'USD',
+      },
+      configuration: {
+        accountId: 973225, // Replace with the actual account ID  -- (Whish client)
+        sessionSecret: 'ab71cccbffb1877b33bf1ba2026ea2b6', // Replace with the actual session secret  -- (Whish client)
+        clientId: 'LeroyBusinessd4a2c6ab-52ca-48cb-ac92-56f1acb8ea1e-0fb290ee', // Replace with your client ID -- (NIBSS ID)
+        paymentOptions: [{ type: 'Card', header: 'Customized header' }],
+        style: {
+          typography: {
+            fontFamily: 'Roboto',
+            color: '#1A1A1A',
+            weight: 400,
+            fontSize: 14,
+            error: {
+              fontFamily: 'Roboto',
+              fontSize: 14,
+              weight: 400,
+              color: '#B6353B',
+            },
+          },
+          header: {
+            fontFamily: 'Roboto',
+            fontSize: 22,
+            weight: 700,
+          },
+          input: {
+            backgroundColor: '#FFF',
+            borderColor: '#B0B7BF',
+            placeholderColor: '#B0B7BF',
+            height: 36,
+            borderRadius: 2,
+            paddingTop: 8,
+            paddingRight: 8,
+            paddingBottom: 8,
+            paddingLeft: 16,
+            error: {
+              backgroundColor: '#FFEBEC',
+              borderColor: '#B6353B',
+              placeholderColor: '#B0B7BF',
+              height: 36,
+              borderRadius: 2,
+              paddingTop: 8,
+              paddingRight: 8,
+              paddingBottom: 8,
+              paddingLeft: 16,
+            },
+          },
+          button: {
+            height: 40,
+            minWidth: 100,
+            padding: {
+              top: 10,
+              right: 24,
+              bottom: 10,
+              left: 24,
+            },
+            textTransform: 'capitalize',
+            backgroundColor: '#1A1A1A',
+            color: '#FFF',
+            fontFamily: 'Roboto',
+            fontSize: 16,
+            weight: 600,
+            borderRadius: 4,
+            border: {
+              color: '#1A1A1A',
+              width: 1,
+              style: 'solid',
+            },
+            hover: {
+              backgroundColor: '#333333',
+              color: '#FFF',
+            },
+            disabled: {
+              backgroundColor: '#E0E0E0',
+              color: '#B0B7BF',
+            },
+          },
+        },
+      },
+    });
+  </script>
+</body>
+</html>
