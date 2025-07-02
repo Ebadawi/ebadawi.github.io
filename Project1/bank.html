@@ -21,15 +21,25 @@
 </head>
 <body>
   <h2>Collect Bank Account Information</h2>
-  <!-- Container where the Veem plugin will be mounted -->
   <div id="veem-collect-bank"></div>
 
   <script>
+    // Helper to generate a UUID-like reference ID
+    function generateReferenceId() {
+      return 'ref-' + ([1e7]+-1e3+-4e3+-8e3+-1e11)
+        .replace(/[018]/g, c =>
+          (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+    }
+
+    const generatedRefId = generateReferenceId();
+
     // Initialize the Veem Web SDK
     new Veem.WebSDK({
       name: 'collectAccountInformation',
-      environment: 'sandbox', // Change to 'production' for live
+      environment: 'sandbox', // Change to 'production' when live
       target: '#veem-collect-bank',
+      referenceId: generatedRefId, // 🔑 Auto-generated referenceId
 
       onExit: () => {
         alert('User exited the bank collection flow.');
@@ -41,13 +51,11 @@
       },
 
       onComplete: ({ referenceId, preset, userInputs }) => {
-        // Updated structure from latest documentation
         const { paymentMethod } = userInputs || {};
         const fundingId = paymentMethod?.fundingMethod?.id;
         const accountMasked = paymentMethod?.accountNumber;
         const fullName = paymentMethod?.name;
         const type = paymentMethod?.type;
-
         const address = paymentMethod?.address || {};
 
         const summary = `
@@ -62,17 +70,15 @@
         alert(summary);
       },
 
-      referenceId: 'bankRef123', // Should be unique per session
-
       preset: {
         amount: 500,
         currencyCode: 'USD',
       },
 
       configuration: {
-        accountId: 973226, // 🔄 Replace with actual account ID from /customers API
+        accountId: 973226, // 🔄 Replace with actual account ID
         sessionSecret: 'b45091d6550ec6656bb0a294b5859057', // 🔄 Replace with actual sessionSecret
-        clientId: 'testQAwhish-5XG09EeqyV', // 🔄 Replace with your registered client ID
+        clientId: 'testQAwhish-5XG09EeqyV', // 🔄 Replace with your client ID
         paymentOptions: [
           { type: 'Bank', header: 'Link your Bank Account' }
         ],
