@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -28,29 +28,54 @@
     // Initialize the Veem Web SDK
     new Veem.WebSDK({
       name: 'collectAccountInformation',
-      environment: 'sandbox', // Change to 'production' for live environment
-      target: '#veem-collect-bank', // CSS selector for the container
-      onExit: () => window.alert('User exited the bank collection flow.'),
-      onError: (err) => console.error('Veem Plugin Error:', err),
-      onComplete: ({ referenceId, preset, userInputs }) => {
-        // Callback when the flow completes
-        const result = `
-          Reference ID: ${referenceId}
-          Preset: ${JSON.stringify(preset, null, 2)}
-          User Inputs: ${JSON.stringify(userInputs, null, 2)}
-        `;
-        window.alert(result);
+      environment: 'sandbox', // Change to 'production' for live
+      target: '#veem-collect-bank',
+
+      onExit: () => {
+        alert('User exited the bank collection flow.');
       },
-      referenceId: 'referenceId123', // Unique identifier for this plugin instance
+
+      onError: (err) => {
+        console.error('Veem Plugin Error:', err);
+        alert('An error occurred: ' + JSON.stringify(err));
+      },
+
+      onComplete: ({ referenceId, preset, userInputs }) => {
+        // Updated structure from latest documentation
+        const { paymentMethod } = userInputs || {};
+        const fundingId = paymentMethod?.fundingMethod?.id;
+        const accountMasked = paymentMethod?.accountNumber;
+        const fullName = paymentMethod?.name;
+        const type = paymentMethod?.type;
+
+        const address = paymentMethod?.address || {};
+
+        const summary = `
+          Reference ID: ${referenceId}
+          Funding Method ID: ${fundingId}
+          Type: ${type}
+          Name: ${fullName}
+          Account (masked): ${accountMasked}
+          Address: ${address.street}, ${address.city}, ${address.stateProvince}, ${address.postalCode}, ${address.countryCode}
+        `;
+
+        alert(summary);
+      },
+
+      referenceId: 'bankRef123', // Should be unique per session
+
       preset: {
         amount: 500,
         currencyCode: 'USD',
       },
+
       configuration: {
-        accountId: 973226, // Replace with the actual account ID
-        sessionSecret: 'b45091d6550ec6656bb0a294b5859057', // Replace with the actual session secret
-        clientId: 'testQAwhish-5XG09EeqyV', // Replace with your client ID
-        paymentOptions: [{ type: 'Bank', header: 'Customized header' }],
+        accountId: 973226, // 🔄 Replace with actual account ID from /customers API
+        sessionSecret: 'b45091d6550ec6656bb0a294b5859057', // 🔄 Replace with actual sessionSecret
+        clientId: 'testQAwhish-5XG09EeqyV', // 🔄 Replace with your registered client ID
+        paymentOptions: [
+          { type: 'Bank', header: 'Link your Bank Account' }
+        ],
         style: {
           typography: {
             fontFamily: 'Roboto',
