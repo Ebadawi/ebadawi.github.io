@@ -1,30 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Veem Bank Collection Plugin</title>
+  <meta charset="UTF-8">
+  <title>Veem Bank Plugin Integration</title>
   <!-- Include the Veem Web SDK -->
   <script src="https://unpkg.com/veem-web-sdk@^0/umd/index.min.js" type="application/javascript"></script>
-  <!-- Include Roboto font for styling -->
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
   <style>
+    /* Custom styles for the plugin */
     body {
       font-family: 'Roboto', sans-serif;
-      margin: 40px;
-      background-color: #f9f9f9;
+      background-color: #f5f5f5;
+      padding: 20px;
     }
-    #veem-collect-bank {
+    #collect-bank {
       max-width: 500px;
       margin: 0 auto;
     }
   </style>
 </head>
 <body>
-  <h2>Collect Bank Account Information</h2>
-  <div id="veem-collect-bank"></div>
+  <h2>Enter Your Bank Details</h2>
+  <!-- Container where the bank plugin will be rendered -->
+  <div id="collect-bank"></div>
 
   <script>
-    // Helper to generate a UUID-like reference ID
     function generateReferenceId() {
       return 'ref-' + ([1e7]+-1e3+-4e3+-8e3+-1e11)
         .replace(/[018]/g, c =>
@@ -33,54 +32,37 @@
     }
 
     const generatedRefId = generateReferenceId();
-
-    // Initialize the Veem Web SDK
+    // Initialize the Veem Bank Plugin
     new Veem.WebSDK({
       name: 'collectAccountInformation',
-      environment: 'sandbox', // Change to 'production' when live
-      target: '#veem-collect-bank',
-      referenceId: generatedRefId, // 🔑 Auto-generated referenceId
-
-      onExit: () => {
-        alert('User exited the bank collection flow.');
-      },
-
-      onError: (err) => {
-        console.error('Veem Plugin Error:', err);
-        alert('An error occurred: ' + JSON.stringify(err));
-      },
-
+      environment: 'sandbox', // Change to 'production' when going live
+      target: '#collect-bank', // CSS selector for the container
+      onExit: () => window.alert('Bank information entry exited.'),
+      onError: (err) => console.error('Error:', err),
       onComplete: ({ referenceId, preset, userInputs }) => {
-        const { paymentMethod } = userInputs || {};
-        const fundingId = paymentMethod?.fundingMethod?.id;
-        const accountMasked = paymentMethod?.accountNumber;
-        const fullName = paymentMethod?.name;
-        const type = paymentMethod?.type;
-        const address = paymentMethod?.address || {};
-
-        const summary = `
+        // Callback when the bank information collection is complete
+        const details = `
           Reference ID: ${referenceId}
-          Funding Method ID: ${fundingId}
-          Type: ${type}
-          Name: ${fullName}
-          Account (masked): ${accountMasked}
-          Address: ${address.street}, ${address.city}, ${address.stateProvince}, ${address.postalCode}, ${address.countryCode}
+          Preset: ${JSON.stringify(preset, null, 2)}
+          User Inputs: ${JSON.stringify(userInputs, null, 2)}
         `;
-
-        alert(summary);
+        window.alert(`Bank information collected:\n${details}`);
+        // You can now use userInputs.fundingMethod.id to initiate payments
       },
-
+      referenceId: generatedRefId, // Replace with your unique reference ID
       preset: {
-        amount: 500,
-        currencyCode: 'USD',
+        amount: 500, // Optional preset amount
+        currencyCode: 'USD' // Currency code
       },
-
       configuration: {
-        accountId: 973226, // 🔄 Replace with actual account ID
-        sessionSecret: 'b45091d6550ec6656bb0a294b5859057', // 🔄 Replace with actual sessionSecret
-        clientId: 'testQAwhish-5XG09EeqyV', // 🔄 Replace with your client ID
+        accountId: 973226, // Replace with the actual account ID
+        sessionSecret: 'b45091d6550ec6656bb0a294b5859057', // Replace with the actual session secret
+        clientId: 'testQAwhish-5XG09EeqyV', // Replace with your client ID
         paymentOptions: [
-          { type: 'Bank', header: 'Link your Bank Account' }
+          {
+            type: 'Bank',
+            header: 'Bank Account Information'
+          }
         ],
         style: {
           typography: {
@@ -92,13 +74,13 @@
               fontFamily: 'Roboto',
               fontSize: 14,
               weight: 400,
-              color: '#B6353B',
-            },
+              color: '#B6353B'
+            }
           },
           header: {
             fontFamily: 'Roboto',
             fontSize: 22,
-            weight: 700,
+            weight: 700
           },
           input: {
             backgroundColor: '#FFF',
@@ -119,8 +101,8 @@
               paddingTop: 8,
               paddingRight: 8,
               paddingBottom: 8,
-              paddingLeft: 16,
-            },
+              paddingLeft: 16
+            }
           },
           button: {
             height: 40,
@@ -129,7 +111,7 @@
               top: 10,
               right: 24,
               bottom: 10,
-              left: 24,
+              left: 24
             },
             textTransform: 'capitalize',
             backgroundColor: '#1A1A1A',
@@ -141,19 +123,19 @@
             border: {
               color: '#1A1A1A',
               width: 1,
-              style: 'solid',
+              style: 'solid'
             },
             hover: {
               backgroundColor: '#333333',
-              color: '#FFF',
+              color: '#FFF'
             },
             disabled: {
               backgroundColor: '#E0E0E0',
-              color: '#B0B7BF',
-            },
-          },
-        },
-      },
+              color: '#B0B7BF'
+            }
+          }
+        }
+      }
     });
   </script>
 </body>
