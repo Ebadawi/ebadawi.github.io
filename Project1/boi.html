@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Veem – Beneficial Ownership Information Plugin Demo</title>
+
+    <!-- Roboto font (plugin default) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Basic page styling (outside of the plugin itself) -->
+    <style>
+      :root {
+        --veem-blue: #1a1a1a; /* Using deep grey from Veem design system */
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family: "Roboto", sans-serif;
+        background: #f8f9fa;
+        color: #1a1a1a;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        text-align: center;
+        padding: 24px 16px 8px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+      }
+
+      main {
+        flex: 1 1 auto;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 0 16px 48px;
+      }
+
+      #collect-BOI {
+        width: 100%;
+        max-width: 640px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Complete Beneficial Ownership Information</h1>
+      <p style="margin: 8px auto 0; max-width: 640px; font-size: 0.9rem;">
+        Use the secure embedded Veem plugin below to provide the Beneficial
+        Ownership Information (BOI) required to enable payments.
+      </p>
+    </header>
+
+    <main>
+      <!-- The plugin mounts itself inside this element -->
+      <div id="collect-BOI"></div>
+    </main>
+
+    <!-- Veem Web SDK (UMD bundle) -->
+    <script
+      src="https://unpkg.com/veem-web-sdk@^0/umd/index.min.js"
+      type="application/javascript"
+      defer
+    ></script>
+
+    <script>
+      /***************************************************************************
+       * Replace the placeholder values below with real credentials obtained
+       * via Veem's <search customer by email> API.                                
+       *   - accountId       →   numeric account ID of the customer
+       *   - sessionSecret   →   session secret (string) returned by the API
+       *   - clientId        →   your partner/embedded app's OAuth client‑id
+       *   - environment     →   "sandbox" for testing, "production" for live
+       *
+       * NOTE: Do not expose production secrets in a public repository. For a
+       *       real integration, inject them server‑side or via a secure vault
+       *       at runtime.
+       **************************************************************************/
+      const accountId = 973226; // 🔁 Update me
+      const sessionSecret = "b45091d6550ec6656bb0a294b5859057"; // 🔁 Update me
+      const clientId = "testQAwhish-5XG09EeqyV"; // 🔁 Update me
+      const environment = "sandbox"; // "production" when you go live
+
+      /*
+       * Helper – builds a unique referenceId per plugin instance so that the
+       * value returned in the onComplete callback can be correlated with your
+       * own records (e.g., orderId, accountId, timestamp, etc.).
+       */
+      const referenceId = `boi-${accountId}-${Date.now()}`;
+
+      /*
+       * Wait until the Veem Web SDK script is loaded (defer) before creating
+       * the plugin instance.
+       */
+      window.addEventListener("load", () => {
+        /*
+         * Initialize the Beneficial Ownership Information Plugin
+         * ------------------------------------------------------
+         * See https://developer.veem.com/docs/beneficial-ownership-information-plugin
+         */
+        new Veem.WebSDK({
+          name: "beneficialOwnershipInfo", // ensures correct internal flow
+          environment,
+          target: "#collect-BOI", // where the UI will be injected
+          referenceId,
+          configuration: {
+            accountId,
+            sessionSecret,
+            clientId,
+            // Display only the BOI flow within the multi‑flow SDK
+            paymentOptions: [
+              {
+                type: "BOI",
+                header: "Beneficial Ownership Information",
+              },
+            ],
+            // Fully customizable plugin styling
+            style: {
+              typography: {
+                fontFamily: "Roboto",
+                color: "#1A1A1A",
+                weight: 400,
+                fontSize: 14,
+                error: {
+                  fontFamily: "Roboto",
+                  fontSize: 14,
+                  weight: 400,
+                  color: "#B6353B",
+                },
+              },
+              header: {
+                fontFamily: "Roboto",
+                fontSize: 22,
+                weight: 700,
+              },
+              input: {
+                backgroundColor: "#FFF",
+                borderColor: "#B0B7BF",
+                placeholderColor: "#B0B7BF",
+                height: 36,
+                borderRadius: 2,
+                paddingTop: 8,
+                paddingRight: 8,
+                paddingBottom: 8,
+                paddingLeft: 16,
+                error: {
+                  backgroundColor: "#FFEBEC",
+                  borderColor: "#B6353B",
+                  placeholderColor: "#B0B7BF",
+                  height: 36,
+                  borderRadius: 2,
+                  paddingTop: 8,
+                  paddingRight: 8,
+                  paddingBottom: 8,
+                  paddingLeft: 16,
+                },
+              },
+              button: {
+                height: 40,
+                minWidth: 100,
+                padding: {
+                  top: 10,
+                  right: 24,
+                  bottom: 10,
+                  left: 24,
+                },
+                textTransform: "capitalize",
+                backgroundColor: "#1A1A1A",
+                color: "#FFF",
+                fontFamily: "Roboto",
+                fontSize: 16,
+                weight: 600,
+                borderRadius: 4,
+                border: {
+                  color: "#1A1A1A",
+                  width: 1,
+                  style: "solid",
+                },
+                hover: {
+                  backgroundColor: "#333333",
+                  color: "#FFF",
+                },
+                disabled: {
+                  backgroundColor: "#E0E0E0",
+                  color: "#B0B7BF",
+                },
+              },
+            },
+          },
+          /*
+           * Callback hooks
+           * --------------
+           * Use these to hand control back to your application after the user
+           * completes the flow, closes it, or encounters an error.
+           */
+          onComplete: ({ referenceId, preset, userInputs }) => {
+            console.info("BOI collection complete", {
+              referenceId,
+              preset,
+              userInputs,
+            });
+            alert(
+              `BOI collection complete! ReferenceId: ${referenceId}\n` +
+                `User inputs: ${JSON.stringify(userInputs, null, 2)}`
+            );
+          },
+          onExit: () => {
+            console.info("User exited BOI plugin");
+          },
+          onError: (err) => {
+            console.error("Veem BOI plugin error", err);
+          },
+        });
+      });
+    </script>
+  </body>
+</html>
