@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Veem BOI Plugin Demo</title>
+    <script src="https://unpkg.com/veem-web-sdk@^0/umd/index.min.js" type="application/javascript"></script>
+  </head>
+  <body>
+    <!-- Container for the plugin -->
+    <div id="collect-BOI"></div>
+
+    <script>
+      new Veem.WebSDK({
+        name: 'collectAccountInformation',
+        environment: 'sandbox',
+        target: '#collect-BOI',
+        onExit: () => window.alert('exit'),
+        onError: (err) => console.error(err),
+        onComplete: ({ referenceId, preset, userInputs }) => {
+          const listString = `\n            referenceId: ${referenceId}\n            preset: ${JSON.stringify(preset, null, 2)}\n            userInputs: ${JSON.stringify(userInputs, null, 2)}\n          `;
+          window.alert(listString);
+        },
+        referenceId: 'referenceId987654', // random reference ID for this instance
+        configuration: {
+          accountId: 973226,
+          sessionSecret: 'b45091d6550ec6656bb0a294b5859057',
+          clientId: 'testQAwhish-5XG09EeqyV',
+          collectedInformationOptions: [{ type: 'BOI', header: 'Beneficial Ownership Information' }],
+          style: {
+            typography: {
+              fontFamily: 'Roboto',
+              color: '#1A1A1A',
+              weight: 400,
+              fontSize: 14,
+              error: {
+                fontFamily: 'Roboto',
+                fontSize: 14,
+                weight: 400,
+                color: '#B6353B'
+              }
+            },
+            header: {
+              fontFamily: 'Roboto',
+              fontSize: 22,
+              weight: 700
+            },
+            input: {
+              backgroundColor: '#FFF',
+              borderColor: '#B0B7BF',
+              placeholderColor: '#B0B7BF',
+              height: 36,
+              borderRadius: 2,
+              paddingTop: 8,
+              paddingRight: 8,
+              paddingBottom: 8,
+              paddingLeft: 16,
+              error: {
+                backgroundColor: '#FFEBEC',
+                borderColor: '#B6353B',
+                placeholderColor: '#B0B7BF',
+                height: 36,
+                borderRadius: 2,
+                paddingTop: 8,
+                paddingRight: 8,
+                paddingBottom: 8,
+                paddingLeft: 16
+              }
+            },
+            button: {
+              height: 40,
+              minWidth: 100,
+              padding: {
+                top: 10,
+                right: 24,
+                bottom: 10,
+                left: 24
+              },
+              textTransform: 'capitalize',
+              backgroundColor: '#1A1A1A',
+              color: '#FFF',
+              fontFamily: 'Roboto',
+              fontSize: 16,
+              weight: 600,
+              borderRadius: 4,
+              border: {
+                color: '#1A1A1A',
+                width: 1,
+                style: 'solid'
+              },
+              hover: {
+                backgroundColor: '#333333',
+                color: '#FFF'
+              },
+              disabled: {
+                backgroundColor: '#E0E0E0',
+                color: '#B0B7BF'
+              }
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
