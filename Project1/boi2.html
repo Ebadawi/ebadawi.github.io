@@ -6,8 +6,10 @@
     <script src="https://unpkg.com/veem-web-sdk@^0/umd/index.min.js" type="application/javascript"></script>
   </head>
   <body>
-    <!-- Container for the plugin -->
-    <div id="collect-BOI"></div>
+    <main>
+      <!-- The plugin mounts itself inside this element -->
+      <div id="collect-BOI"></div>
+    </main>
 
     <script>
       new Veem.WebSDK({
@@ -25,7 +27,7 @@
           accountId: 973226,
           sessionSecret: 'b45091d6550ec6656bb0a294b5859057',
           clientId: 'testQAwhish-5XG09EeqyV',
-          collectedInformationOptions: [{ type: 'BOI', header: 'Beneficial Ownership Information' }],
+          collectedInformationOptions: [{ type: 'BeneficialOwnershipInformation', header: 'Beneficial Ownership Information' }],
           style: {
             typography: {
               fontFamily: 'Roboto',
