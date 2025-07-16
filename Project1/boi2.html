@@ -2,32 +2,33 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Veem BOI Plugin Demo</title>
+    <title>Veem BOI Plugin Demo – Account 973226</title>
+    <!-- Veem Web SDK -->
     <script src="https://unpkg.com/veem-web-sdk@^0/umd/index.min.js" type="application/javascript"></script>
   </head>
   <body>
-    <main>
-      <!-- The plugin mounts itself inside this element -->
-      <div id="collect-BOI"></div>
-    </main>
+    <!-- Container for the BOI plugin -->
+    <div id="collect-BOI"></div>
 
     <script>
       new Veem.WebSDK({
         name: 'collectAccountInformation',
         environment: 'sandbox',
-        target: '#collect-BOI',
+        target: '#collect-BOI', // CSS selector where the plugin mounts
         onExit: () => window.alert('exit'),
         onError: (err) => console.error(err),
         onComplete: ({ referenceId, preset, userInputs }) => {
-          const listString = `\n            referenceId: ${referenceId}\n            preset: ${JSON.stringify(preset, null, 2)}\n            userInputs: ${JSON.stringify(userInputs, null, 2)}\n          `;
+          const listString = `\nreferenceId: ${referenceId}\npreset: ${JSON.stringify(preset, null, 2)}\nuserInputs: ${JSON.stringify(userInputs, null, 2)}\n`;
           window.alert(listString);
         },
-        referenceId: 'referenceId987654', // random reference ID for this instance
+        referenceId: 'referenceId987654', // unique identifier for this plugin instance
         configuration: {
-          accountId: 973226,
-          sessionSecret: 'b45091d6550ec6656bb0a294b5859057',
-          clientId: 'testQAwhish-5XG09EeqyV',
-          collectedInformationOptions: [{ type: 'BeneficialOwnershipInformation', header: 'Beneficial Ownership Information' }],
+          accountId: 973226, // your payer/payee accountId
+          sessionSecret: 'b45091d6550ec6656bb0a294b5859057', // session secret from search customer API
+          clientId: 'testQAwhish-5XG09EeqyV', // your registered clientId
+          collectedInformationOptions: [
+            { type: 'BeneficialOwnershipInformation', header: 'Beneficial Ownership Information' }
+          ],
           style: {
             typography: {
               fontFamily: 'Roboto',
@@ -38,13 +39,13 @@
                 fontFamily: 'Roboto',
                 fontSize: 14,
                 weight: 400,
-                color: '#B6353B'
-              }
+                color: '#B6353B',
+              },
             },
             header: {
               fontFamily: 'Roboto',
               fontSize: 22,
-              weight: 700
+              weight: 700,
             },
             input: {
               backgroundColor: '#FFF',
@@ -65,8 +66,8 @@
                 paddingTop: 8,
                 paddingRight: 8,
                 paddingBottom: 8,
-                paddingLeft: 16
-              }
+                paddingLeft: 16,
+              },
             },
             button: {
               height: 40,
@@ -75,7 +76,7 @@
                 top: 10,
                 right: 24,
                 bottom: 10,
-                left: 24
+                left: 24,
               },
               textTransform: 'capitalize',
               backgroundColor: '#1A1A1A',
@@ -87,19 +88,19 @@
               border: {
                 color: '#1A1A1A',
                 width: 1,
-                style: 'solid'
+                style: 'solid',
               },
               hover: {
                 backgroundColor: '#333333',
-                color: '#FFF'
+                color: '#FFF',
               },
               disabled: {
                 backgroundColor: '#E0E0E0',
-                color: '#B0B7BF'
-              }
-            }
-          }
-        }
+                color: '#B0B7BF',
+              },
+            },
+          },
+        },
       });
     </script>
   </body>
