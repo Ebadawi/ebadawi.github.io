@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plugin Loader</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem;
+      background-color: #f4f4f4;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .iframe-container {
+      flex: 1;
+      padding: 1rem;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Plugin Loader</h1>
+  </header>
+  <div class="button-container">
+    <button onclick="loadPlugin('https://ebadawi.github.io/Project1/card.html')">Card Plugin</button>
+    <button onclick="loadPlugin('https://ebadawi.github.io/Project1/bank.html')">Bank Plugin</button>
+    <button onclick="loadPlugin('https://ebadawi.github.io/Project1/boi.html')">BOI Plugin</button>
+  </div>
+  <div class="iframe-container">
+    <iframe id="pluginFrame" src=""></iframe>
+  </div>
+
+  <script>
+    function loadPlugin(url) {
+      document.getElementById('pluginFrame').src = url;
+    }
+  </script>
+</body>
+</html>
