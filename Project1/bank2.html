@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Veem Bank Plugin Integration</title>
+  <script src="https://unpkg.com/veem-web-sdk@^0/umd/index.min.js" type="application/javascript"></script>
+  <style>
+    body { font-family: 'Roboto', sans-serif; background-color: #f5f5f5; padding: 20px; }
+    #collect-bank { max-width: 500px; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <h2>Enter Your Bank Details</h2>
+  <div id="collect-bank"></div>
+
+  <script>
+    const DEFAULTS = {
+      accountId: "973226",
+      sessionSecret: "b45091d6550ec6656bb0a294b5859057",
+      clientId: "testQAwhish-5XG09EeqyV",
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const accountId = params.get("accountId") || DEFAULTS.accountId;
+    const sessionSecret = params.get("sessionSecret") || DEFAULTS.sessionSecret;
+    const clientId = params.get("clientId") || DEFAULTS.clientId;
+
+    function generateReferenceId() {
+      return 'ref-' + ([1e7]+-1e3+-4e3+-8e3+-1e11)
+        .replace(/[018]/g, c =>
+          (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+    }
+
+    const generatedRefId = generateReferenceId();
+
+    new Veem.WebSDK({
+      name: 'collectAccountInformation',
+      environment: 'sandbox',
+      target: '#collect-bank',
+      onExit: () => window.alert('Bank information entry exited.'),
+      onError: (err) => console.error('Error:', err),
+      onComplete: ({ referenceId, preset, userInputs }) => {
+        const details = `Reference ID: ${referenceId}
+Preset: ${JSON.stringify(preset, null, 2)}
+User Inputs: ${JSON.stringify(userInputs, null, 2)}`;
+        window.alert(`Bank information collected:\n${details}`);
+      },
+      referenceId: generatedRefId,
+      preset: { amount: 500, currencyCode: 'USD' },
+      configuration: {
+        accountId: Number(accountId),
+        sessionSecret,
+        clientId,
+        paymentOptions: [{ type: 'Bank', header: 'Bank Account Information' }],
+        style: {
+          typography: {
+            fontFamily: 'Roboto', color: '#1A1A1A', weight: 400, fontSize: 14,
+            error: { fontFamily: 'Roboto', fontSize: 14, weight: 400, color: '#B6353B' }
+          },
+          header: { fontFamily: 'Roboto', fontSize: 22, weight: 700 },
+          input: {
+            backgroundColor: '#FFF', borderColor: '#B0B7BF', placeholderColor: '#B0B7BF',
+            height: 36, borderRadius: 2, paddingTop: 8, paddingRight: 8, paddingBottom: 8, paddingLeft: 16,
+            error: {
+              backgroundColor: '#FFEBEC', borderColor: '#B6353B', placeholderColor: '#B0B7BF',
+              height: 36, borderRadius: 2, paddingTop: 8, paddingRight: 8, paddingBottom: 8, paddingLeft: 16
+            }
+          },
+          button: {
+            height: 40, minWidth: 100,
+            padding: { top: 10, right: 24, bottom: 10, left: 24 },
+            textTransform: 'capitalize', backgroundColor: '#1A1A1A', color: '#FFF',
+            fontFamily: 'Roboto', fontSize: 16, weight: 600, borderRadius: 4,
+            border: { color: '#1A1A1A', width: 1, style: 'solid' },
+            hover: { backgroundColor: '#333333', color: '#FFF' },
+            disabled: { backgroundColor: '#E0E0E0', color: '#B0B7BF' }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
