@@ -65,4 +65,62 @@
       onExit: () => alert('exit'),
       onError: (err) => console.error(err),
       onComplete: ({ referenceId, userInputs, preset }) => {
-        alert(`refe
+        alert(`referenceId: ${referenceId}\n\npreset: ${JSON.stringify(preset,null,2)}\n\nuserInputs: ${JSON.stringify(userInputs,null,2)}`);
+      },
+      referenceId: 'referenceId123',
+      preset: { amount: 500, currencyCode: 'USD' }
+    };
+
+    function buildConfig() {
+      return {
+        accountId: Number(document.getElementById("accountId").value || DEFAULTS.accountId),
+        sessionSecret: document.getElementById("sessionSecret").value || DEFAULTS.sessionSecret,
+        clientId: document.getElementById("clientId").value || DEFAULTS.clientId,
+        style: { /* same styling as before */ }
+      };
+    }
+
+    function clearTarget() {
+      document.getElementById("plugin-target").innerHTML = "";
+      return "#plugin-target";
+    }
+
+    document.getElementById("btn-card").onclick = () => {
+      new Veem.WebSDK({
+        ...commonSdkProps,
+        target: clearTarget(),
+        configuration: {
+          ...buildConfig(),
+          paymentOptions: [{ type: 'Card', header: 'Customized header' }]
+        }
+      });
+    };
+
+    document.getElementById("btn-bank").onclick = () => {
+      new Veem.WebSDK({
+        ...commonSdkProps,
+        target: clearTarget(),
+        configuration: {
+          ...buildConfig(),
+          paymentOptions: [{ type: 'Bank', header: 'Bank Account Information' }]
+        }
+      });
+    };
+
+    document.getElementById("btn-boi").onclick = () => {
+      new Veem.WebSDK({
+        ...commonSdkProps,
+        target: clearTarget(),
+        configuration: {
+          ...buildConfig(),
+          collectedInformationOptions: [{ type: 'BeneficialOwnershipInformation', header: 'Beneficial Ownership Information' }]
+        }
+      });
+    };
+
+    document.getElementById("btn-clear").onclick = () => {
+      document.getElementById("plugin-target").innerHTML = "";
+    };
+  </script>
+</body>
+</html>
