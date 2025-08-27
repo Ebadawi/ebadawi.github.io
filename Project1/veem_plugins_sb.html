@@ -8,16 +8,24 @@
   <script src="https://unpkg.com/veem-web-sdk@^0/umd/index.min.js" type="application/javascript"></script>
   <style>
     :root { --border:#e5e7eb; --card:#fff; --bg:#f9fafb; --btn:#0057ff; --btn-hover:#0041cc; --text:#1a1a1a; --muted:#6b7280; }
-    *{box-sizing:border-box} body{margin:0;font-family:'Roboto',system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
-    header{background:var(--card);border-bottom:1px solid var(--border);padding:1rem 1.5rem} h1{margin:0;font-size:1.25rem}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:'Roboto',system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    header{background:var(--card);border-bottom:1px solid var(--border);padding:1rem 1.5rem}
+    h1{margin:0;font-size:1.25rem}
     .grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.75rem;padding:1rem 1.5rem;background:var(--card);border-bottom:1px solid var(--border);align-items:center}
-    .grid label{text-align:right;color:var(--muted);font-size:.9rem} .grid input{width:100%;padding:.55rem .65rem;border:1px solid #d1d5db;border-radius:.5rem;font-size:.95rem;background:#fff}
+    .grid label{text-align:right;color:var(--muted);font-size:.9rem}
+    .grid input{width:100%;padding:.55rem .65rem;border:1px solid #d1d5db;border-radius:.5rem;font-size:.95rem;background:#fff}
     .actions{display:flex;flex-wrap:wrap;gap:.75rem;padding:.75rem 1.5rem 1.25rem;background:var(--card);border-bottom:1px solid var(--border)}
-    button{border:none;border-radius:.5rem;padding:.6rem 1rem;font-weight:600;cursor:pointer} .primary{background:var(--btn);color:#fff} .primary:hover{background:var(--btn-hover)}
+    button{border:none;border-radius:.5rem;padding:.6rem 1rem;font-weight:600;cursor:pointer}
+    .primary{background:var(--btn);color:#fff}
+    .primary:hover{background:var(--btn-hover)}
     .ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
     #layout{display:grid;grid-template-columns:1fr 360px;gap:1rem;max-width:1200px;margin:1rem auto;padding:0 1rem}
     #plugin-card,#result-card{background:var(--card);border:1px solid var(--border);border-radius:.75rem}
-    #plugin-card{min-height:240px;padding:1rem} #plugin-container{min-height:200px}
+    #plugin-card{min-height:240px;padding:1rem}
+    #plugin-container{display:flex;flex-direction:column;gap:1rem}
+    .plugin-target{min-height:200px;border:1px dashed var(--border);border-radius:.5rem;padding:.5rem}
+    .plugin-label{font-size:.85rem;color:var(--muted);margin:0 0 .25rem .25rem}
     #result-card header{padding:.75rem 1rem;border-bottom:1px solid var(--border);font-weight:700}
     #result{padding:1rem;max-height:420px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:.9rem;white-space:pre-wrap}
     .hint{font-size:.85rem;color:var(--muted);padding:0 1.5rem 1rem;background:var(--card);border-bottom:1px solid var(--border)}
@@ -42,7 +50,7 @@
 
   <div id="layout">
     <div id="plugin-card">
-      <div id="plugin-container"><!-- fresh target is created here each time --></div>
+      <div id="plugin-container"><!-- Each launch appends a new plugin target; old ones remain --></div>
     </div>
     <aside id="result-card">
       <header>Latest callback result</header>
@@ -59,7 +67,7 @@
       environment: "sandbox"
     };
 
-    // Prefill from URL or defaults
+    // Prefill inputs from URL or defaults
     (function prefill() {
       const p = new URLSearchParams(location.search);
       accountId.value   = p.get("accountId")    || DEFAULTS.accountId;
@@ -67,6 +75,7 @@
       clientId.value    = p.get("clientId")     || DEFAULTS.clientId;
     })();
 
+    // Write inputs back to URL (handy for sharing/reloads)
     function writeInputsToUrl() {
       const q = new URLSearchParams({
         accountId: accountId.value || DEFAULTS.accountId,
@@ -77,24 +86,12 @@
     }
     document.getElementById('btn-update-url').addEventListener('click', writeInputsToUrl);
 
-    // Keep a SINGLE instance so we can destroy it cleanly
-    let currentInstance = null;
-
-    // Shared props
-    const baseProps = {
-      name: 'collectAccountInformation',
-      environment: DEFAULTS.environment,
-      // No alert() calls; we render to the side panel instead.
-      onError: (err) => {
-        renderResult({ error: String(err && err.message ? err.message : err) });
-        console.error(err);
-      }
-    };
-
+    // Helpers
     function renderResult(payload) {
       const el = document.getElementById('result');
       el.textContent = typeof payload === 'string' ? payload : JSON.stringify(payload, null, 2);
     }
+    function clearResultPanel() { renderResult(''); }
 
     function buildConfig() {
       return {
@@ -108,11 +105,13 @@
           },
           header: { fontFamily: 'Roboto', fontSize: 22, weight: 700 },
           input: {
-            backgroundColor: '#FFF', borderColor: '#B0B7BF', placeholderColor: '#B0B7BF', height: 36, borderRadius: 2,
+            backgroundColor: '#FFF', borderColor: '#B0B7BF', placeholderColor: '#B0B7BF',
+            height: 36, borderRadius: 2,
             paddingTop: 8, paddingRight: 8, paddingBottom: 8, paddingLeft: 16,
             error: {
               backgroundColor: '#FFEBEC', borderColor: '#B6353B', placeholderColor: '#B0B7BF',
-              height: 36, borderRadius: 2, paddingTop: 8, paddingRight: 8, paddingBottom: 8, paddingLeft: 16,
+              height: 36, borderRadius: 2,
+              paddingTop: 8, paddingRight: 8, paddingBottom: 8, paddingLeft: 16,
             },
           },
           button: {
@@ -135,67 +134,70 @@
         );
     }
 
-    function freshTargetSelector() {
+    function appendTarget(label) {
       const container = document.getElementById('plugin-container');
-      container.innerHTML = '';
-      const id = `plugin-target-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-      const div = document.createElement('div');
-      div.id = id;
-      container.appendChild(div);
-      return `#${id}`;
+      const wrap = document.createElement('div');
+      const title = document.createElement('div');
+      const target = document.createElement('div');
+
+      title.className = 'plugin-label';
+      title.textContent = label;
+
+      target.className = 'plugin-target';
+      target.id = `plugin-target-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+      wrap.appendChild(title);
+      wrap.appendChild(target);
+      container.appendChild(wrap);
+
+      target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      return `#${target.id}`;
     }
 
-    async function launch(optsBuilder) {
-      try {
-        // If an instance is already running, destroy it first (clean handoff)
-        if (currentInstance && typeof currentInstance.destroy === 'function') {
-          try { currentInstance.destroy(); } catch (e) { console.warn('destroy failed', e); }
-          currentInstance = null;
-        }
-
-        const target = freshTargetSelector();
-        const configuration = buildConfig();
-        const referenceId = genReferenceId();
-
-        // Install completion/exit handlers per run (no blocking alerts)
-        const onComplete = ({ referenceId, userInputs, preset }) => {
-          renderResult({ referenceId, preset, userInputs, status: 'complete' });
-          // Close out the UI deterministically
-          try { currentInstance && currentInstance.destroy && currentInstance.destroy(); } catch {}
-          currentInstance = null;
-        };
-
-        const onExit = () => {
-          renderResult({ status: 'exit' });
-          try { currentInstance && currentInstance.destroy && currentInstance.destroy(); } catch {}
-          currentInstance = null;
-        };
-
-        currentInstance = new Veem.WebSDK({
-          ...baseProps,
-          target,
-          referenceId,
-          preset: { amount: 500, currencyCode: 'USD' },
-          onComplete,
-          onExit,
-          configuration: optsBuilder(configuration)
-        });
-      } catch (e) {
-        renderResult({ error: String(e) });
-      }
+    // Base props (no blocking alerts)
+    function baseProps() {
+      return {
+        name: 'collectAccountInformation',
+        environment: DEFAULTS.environment,
+        onError: (err) => { console.error(err); renderResult({ error: String(err?.message || err) }); }
+      };
     }
 
-    // Buttons
+    // Launchers (do NOT clear/destroy prior plugins)
+    function launch(buildCfg, label) {
+      // Clear the side result immediately when switching/launching another plugin
+      clearResultPanel();
+
+      const target = appendTarget(label);
+      const cfg = buildConfig();
+      const referenceId = genReferenceId();
+
+      new Veem.WebSDK({
+        ...baseProps(),
+        target,
+        referenceId,
+        preset: { amount: 500, currencyCode: 'USD' },
+        onExit: () => {
+          // No clearing of plugin; simply reflect exit state
+          renderResult({ status: 'exit', referenceId });
+        },
+        onComplete: ({ referenceId, userInputs, preset }) => {
+          // Show results; DO NOT clear/destroy the plugin instance
+          renderResult({ status: 'complete', referenceId, preset, userInputs });
+        },
+        configuration: buildCfg(cfg)
+      });
+    }
+
+    // Wire buttons
     document.getElementById('btn-card').addEventListener('click', () =>
-      launch(cfg => ({ ...cfg, paymentOptions: [{ type: 'Card', header: 'Customized header' }] }))
+      launch(cfg => ({ ...cfg, paymentOptions: [{ type: 'Card', header: 'Customized header' }] }), 'Card Plugin')
     );
-
     document.getElementById('btn-bank').addEventListener('click', () =>
-      launch(cfg => ({ ...cfg, paymentOptions: [{ type: 'Bank', header: 'Bank Account Information' }] }))
+      launch(cfg => ({ ...cfg, paymentOptions: [{ type: 'Bank', header: 'Bank Account Information' }] }), 'Bank Plugin')
     );
-
     document.getElementById('btn-boi').addEventListener('click', () =>
-      launch(cfg => ({ ...cfg, collectedInformationOptions: [{ type: 'BeneficialOwnershipInformation', header: 'Beneficial Ownership Information' }] }))
+      launch(cfg => ({ ...cfg, collectedInformationOptions: [{ type: 'BeneficialOwnershipInformation', header: 'Beneficial Ownership Information' }] }), 'BOI Plugin')
     );
   </script>
 </body>
