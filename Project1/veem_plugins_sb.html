@@ -23,9 +23,7 @@
     #layout{display:grid;grid-template-columns:1fr 360px;gap:1rem;max-width:1200px;margin:1rem auto;padding:0 1rem}
     #plugin-card,#result-card{background:var(--card);border:1px solid var(--border);border-radius:.75rem}
     #plugin-card{min-height:240px;padding:1rem}
-    #plugin-container{display:flex;flex-direction:column;gap:1rem}
-    .plugin-target{min-height:200px;border:1px dashed var(--border);border-radius:.5rem;padding:.5rem}
-    .plugin-label{font-size:.85rem;color:var(--muted);margin:0 0 .25rem .25rem}
+    #plugin-target{min-height:200px}
     #result-card header{padding:.75rem 1rem;border-bottom:1px solid var(--border);font-weight:700}
     #result{padding:1rem;max-height:420px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:.9rem;white-space:pre-wrap}
     .hint{font-size:.85rem;color:var(--muted);padding:0 1.5rem 1rem;background:var(--card);border-bottom:1px solid var(--border)}
@@ -50,7 +48,7 @@
 
   <div id="layout">
     <div id="plugin-card">
-      <div id="plugin-container"><!-- Each launch appends a new plugin target; old ones remain --></div>
+      <div id="plugin-target"><!-- exactly one plugin sits here at a time --></div>
     </div>
     <aside id="result-card">
       <header>Latest callback result</header>
@@ -59,145 +57,139 @@
   </div>
 
   <script>
-    // Visible defaults
+    // --- CONSTANT DEFAULTS (VISIBLE) ---
     const DEFAULTS = {
       accountId: "973226",
       sessionSecret: "b45091d6550ec6656bb0a294b5859057",
       clientId: "testQAwhish-5XG09EeqyV",
-      environment: "sandbox"
+      environment: "sandbox" // as per your sandbox testing
     };
 
-    // Prefill inputs from URL or defaults
+    // Prefill from URL or defaults
     (function prefill() {
       const p = new URLSearchParams(location.search);
-      accountId.value   = p.get("accountId")    || DEFAULTS.accountId;
-      sessionSecret.value = p.get("sessionSecret") || DEFAULTS.sessionSecret;
-      clientId.value    = p.get("clientId")     || DEFAULTS.clientId;
+      accountId.value     = p.get("accountId")    || DEFAULTS.accountId;
+      sessionSecret.value = p.get("sessionSecret")|| DEFAULTS.sessionSecret;
+      clientId.value      = p.get("clientId")     || DEFAULTS.clientId;
     })();
 
-    // Write inputs back to URL (handy for sharing/reloads)
-    function writeInputsToUrl() {
+    // Handy: write current inputs back to URL
+    document.getElementById('btn-update-url').addEventListener('click', () => {
       const q = new URLSearchParams({
         accountId: accountId.value || DEFAULTS.accountId,
         sessionSecret: sessionSecret.value || DEFAULTS.sessionSecret,
         clientId: clientId.value || DEFAULTS.clientId,
       });
       history.replaceState(null, "", `${location.pathname}?${q.toString()}`);
-    }
-    document.getElementById('btn-update-url').addEventListener('click', writeInputsToUrl);
+    });
+
+    // One active instance at a time
+    let currentInstance = null;
 
     // Helpers
-    function renderResult(payload) {
+    const renderResult = (payload) => {
       const el = document.getElementById('result');
-      el.textContent = typeof payload === 'string' ? payload : JSON.stringify(payload, null, 2);
-    }
-    function clearResultPanel() { renderResult(''); }
+      el.textContent = payload ? (typeof payload === 'string' ? payload : JSON.stringify(payload, null, 2)) : '';
+    };
 
-    function buildConfig() {
-      return {
-        accountId: Number(accountId.value || DEFAULTS.accountId),
-        sessionSecret: (sessionSecret.value || DEFAULTS.sessionSecret).trim(),
-        clientId: (clientId.value || DEFAULTS.clientId).trim(),
-        style: {
-          typography: {
-            fontFamily: 'Roboto', color: '#1A1A1A', weight: 400, fontSize: 14,
-            error: { fontFamily: 'Roboto', fontSize: 14, weight: 400, color: '#B6353B' },
-          },
-          header: { fontFamily: 'Roboto', fontSize: 22, weight: 700 },
-          input: {
-            backgroundColor: '#FFF', borderColor: '#B0B7BF', placeholderColor: '#B0B7BF',
-            height: 36, borderRadius: 2,
-            paddingTop: 8, paddingRight: 8, paddingBottom: 8, paddingLeft: 16,
-            error: {
-              backgroundColor: '#FFEBEC', borderColor: '#B6353B', placeholderColor: '#B0B7BF',
-              height: 36, borderRadius: 2,
-              paddingTop: 8, paddingRight: 8, paddingBottom: 8, paddingLeft: 16,
-            },
-          },
-          button: {
-            height: 40, minWidth: 100,
-            padding: { top: 10, right: 24, bottom: 10, left: 24 },
-            textTransform: 'capitalize', backgroundColor: '#1A1A1A', color: '#FFF',
-            fontFamily: 'Roboto', fontSize: 16, weight: 600, borderRadius: 4,
-            border: { color: '#1A1A1A', width: 1, style: 'solid' },
-            hover: { backgroundColor: '#333333', color: '#FFF' },
-            disabled: { backgroundColor: '#E0E0E0', color: '#B0B7BF' },
+    const clearResultPanel = () => renderResult('');
+
+    const buildConfig = () => ({
+      accountId: Number(accountId.value || DEFAULTS.accountId),
+      sessionSecret: (sessionSecret.value || DEFAULTS.sessionSecret).trim(),
+      clientId: (clientId.value || DEFAULTS.clientId).trim(),
+      style: {
+        typography: {
+          fontFamily: 'Roboto', color: '#1A1A1A', weight: 400, fontSize: 14,
+          error: { fontFamily: 'Roboto', fontSize: 14, weight: 400, color: '#B6353B' },
+        },
+        header: { fontFamily: 'Roboto', fontSize: 22, weight: 700 },
+        input: {
+          backgroundColor: '#FFF', borderColor: '#B0B7BF', placeholderColor: '#B0B7BF', height: 36, borderRadius: 2,
+          paddingTop: 8, paddingRight: 8, paddingBottom: 8, paddingLeft: 16,
+          error: {
+            backgroundColor: '#FFEBEC', borderColor: '#B6353B', placeholderColor: '#B0B7BF',
+            height: 36, borderRadius: 2, paddingTop: 8, paddingRight: 8, paddingBottom: 8, paddingLeft: 16,
           },
         },
-      };
-    }
+        button: {
+          height: 40, minWidth: 100,
+          padding: { top: 10, right: 24, bottom: 10, left: 24 },
+          textTransform: 'capitalize', backgroundColor: '#1A1A1A', color: '#FFF',
+          fontFamily: 'Roboto', fontSize: 16, weight: 600, borderRadius: 4,
+          border: { color: '#1A1A1A', width: 1, style: 'solid' },
+          hover: { backgroundColor: '#333333', color: '#FFF' },
+          disabled: { backgroundColor: '#E0E0E0', color: '#B0B7BF' },
+        },
+      },
+    });
 
-    function genReferenceId() {
-      return 'ref-' + ([1e7]+-1e3+-4e3+-8e3+-1e11)
-        .replace(/[018]/g, c =>
-          (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-        );
-    }
+    const genReferenceId = () =>
+      'ref-' + ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+      );
 
-    function appendTarget(label) {
-      const container = document.getElementById('plugin-container');
-      const wrap = document.createElement('div');
-      const title = document.createElement('div');
-      const target = document.createElement('div');
+    const freshenTarget = () => {
+      // Keep exactly one mount node; replace it on each plugin switch
+      const holder = document.getElementById('plugin-target');
+      holder.innerHTML = '';
+      const div = document.createElement('div');
+      div.id = 'plugin-mount';
+      holder.appendChild(div);
+      return '#plugin-mount';
+    };
 
-      title.className = 'plugin-label';
-      title.textContent = label;
+    // Base props — no blocking alerts
+    const baseProps = {
+      name: 'collectAccountInformation',
+      environment: DEFAULTS.environment,
+      onError: (err) => { console.error(err); renderResult({ error: String(err?.message || err) }); },
+    };
 
-      target.className = 'plugin-target';
-      target.id = `plugin-target-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-
-      wrap.appendChild(title);
-      wrap.appendChild(target);
-      container.appendChild(wrap);
-
-      target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      return `#${target.id}`;
-    }
-
-    // Base props (no blocking alerts)
-    function baseProps() {
-      return {
-        name: 'collectAccountInformation',
-        environment: DEFAULTS.environment,
-        onError: (err) => { console.error(err); renderResult({ error: String(err?.message || err) }); }
-      };
-    }
-
-    // Launchers (do NOT clear/destroy prior plugins)
-    function launch(buildCfg, label) {
-      // Clear the side result immediately when switching/launching another plugin
+    // Core launcher
+    function launchPlugin(configBuilder) {
+      // Rule: when another plugin is clicked → clear old result + close old plugin
       clearResultPanel();
 
-      const target = appendTarget(label);
-      const cfg = buildConfig();
+      if (currentInstance && typeof currentInstance.destroy === 'function') {
+        try { currentInstance.destroy(); } catch (e) { console.warn('destroy failed', e); }
+        currentInstance = null;
+      }
+
+      const target = freshenTarget();
+      const configuration = configBuilder(buildConfig());
       const referenceId = genReferenceId();
 
-      new Veem.WebSDK({
-        ...baseProps(),
+      currentInstance = new Veem.WebSDK({
+        ...baseProps,
         target,
         referenceId,
         preset: { amount: 500, currencyCode: 'USD' },
-        onExit: () => {
-          // No clearing of plugin; simply reflect exit state
-          renderResult({ status: 'exit', referenceId });
-        },
+        // IMPORTANT: Do NOT destroy/clear on complete → keep plugin visible
         onComplete: ({ referenceId, userInputs, preset }) => {
-          // Show results; DO NOT clear/destroy the plugin instance
           renderResult({ status: 'complete', referenceId, preset, userInputs });
+          // leave currentInstance & UI mounted
         },
-        configuration: buildCfg(cfg)
+        onExit: () => {
+          // user explicitly exited; reflect that state and let SDK close its UI
+          renderResult({ status: 'exit' });
+          currentInstance = null; // SDK will have closed; allow re-launch
+        },
+        configuration
       });
     }
 
-    // Wire buttons
+    // Buttons
     document.getElementById('btn-card').addEventListener('click', () =>
-      launch(cfg => ({ ...cfg, paymentOptions: [{ type: 'Card', header: 'Customized header' }] }), 'Card Plugin')
+      launchPlugin(cfg => ({ ...cfg, paymentOptions: [{ type: 'Card', header: 'Customized header' }] }))
     );
+
     document.getElementById('btn-bank').addEventListener('click', () =>
-      launch(cfg => ({ ...cfg, paymentOptions: [{ type: 'Bank', header: 'Bank Account Information' }] }), 'Bank Plugin')
+      launchPlugin(cfg => ({ ...cfg, paymentOptions: [{ type: 'Bank', header: 'Bank Account Information' }] }))
     );
+
     document.getElementById('btn-boi').addEventListener('click', () =>
-      launch(cfg => ({ ...cfg, collectedInformationOptions: [{ type: 'BeneficialOwnershipInformation', header: 'Beneficial Ownership Information' }] }), 'BOI Plugin')
+      launchPlugin(cfg => ({ ...cfg, collectedInformationOptions: [{ type: 'BeneficialOwnershipInformation', header: 'Beneficial Ownership Information' }] }))
     );
   </script>
 </body>
