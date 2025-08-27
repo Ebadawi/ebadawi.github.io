@@ -43,7 +43,6 @@
     <button class="primary" id="btn-card">Collect card info</button>
     <button class="primary" id="btn-bank">Collect bank info</button>
     <button class="primary" id="btn-boi">Collect BOI info</button>
-    <button class="ghost"   id="btn-update-url" title="Write current inputs to the page URL">Update URL</button>
   </div>
 
   <div id="layout">
@@ -73,15 +72,6 @@
       clientId.value      = p.get("clientId")     || DEFAULTS.clientId;
     })();
 
-    // Handy: write current inputs back to URL
-    document.getElementById('btn-update-url').addEventListener('click', () => {
-      const q = new URLSearchParams({
-        accountId: accountId.value || DEFAULTS.accountId,
-        sessionSecret: sessionSecret.value || DEFAULTS.sessionSecret,
-        clientId: clientId.value || DEFAULTS.clientId,
-      });
-      history.replaceState(null, "", `${location.pathname}?${q.toString()}`);
-    });
 
     // One active instance at a time
     let currentInstance = null;
