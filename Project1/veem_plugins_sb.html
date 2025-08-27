@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Veem – Unified Plugin Tester</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/veem-web-sdk@^0/umd/index.min.js" type="application/javascript"></script>
+  <style>
+    body { font-family: 'Roboto', sans-serif; background: #f9fafb; margin: 0; }
+    header { background: #fff; border-bottom: 1px solid #ddd; padding: 1rem 1.5rem; }
+    h1 { margin: 0; font-size: 1.25rem; }
+    .grid { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: .75rem; padding: 1rem 1.5rem; background: #fff; border-bottom: 1px solid #ddd; align-items: center; }
+    .grid label { text-align: right; font-size: .9rem; color: #555; }
+    .grid input { width: 100%; padding: .55rem .65rem; border: 1px solid #d1d5db; border-radius: .5rem; font-size: .95rem; }
+    .actions { display: flex; gap: .75rem; padding: 1rem 1.5rem; background: #fff; border-bottom: 1px solid #ddd; }
+    button { border: none; border-radius: .5rem; padding: .6rem 1rem; font-weight: 600; cursor: pointer; }
+    .primary { background: #0057ff; color: #fff; }
+    .primary:hover { background: #0041cc; }
+    .ghost { background: transparent; border: 1px solid #ddd; color: #333; }
+    #plugin-container { max-width: 860px; margin: 1rem auto; padding: 1rem; background: #fff; border: 1px solid #ddd; border-radius: .75rem; min-height: 200px; }
+  </style>
+</head>
+<body>
+  <header><h1>Veem – Unified Plugin Tester</h1></header>
+
+  <div class="grid">
+    <label for="accountId">accountId</label>
+    <input id="accountId" type="number" />
+    <label for="sessionSecret">sessionSecret</label>
+    <input id="sessionSecret" type="text" />
+    <label for="clientId">clientId</label>
+    <input id="clientId" type="text" />
+  </div>
+
+  <div class="actions">
+    <button class="primary" id="btn-card">Collect Card Info</button>
+    <button class="primary" id="btn-bank">Collect Bank Info</button>
+    <button class="primary" id="btn-boi">Collect BOI Info</button>
+    <button class="ghost" id="btn-clear">Clear Plugin</button>
+  </div>
+
+  <div id="plugin-container"><div id="plugin-target"></div></div>
+
+  <script>
+    // --- CONSTANT DEFAULTS (VISIBLE) ---
+    const DEFAULTS = {
+      accountId: "973226",
+      sessionSecret: "b45091d6550ec6656bb0a294b5859057",
+      clientId: "testQAwhish-5XG09EeqyV",
+      environment: "sandbox"
+    };
+
+    // Prefill inputs (URL > Defaults)
+    (function prefillInputs() {
+      const params = new URLSearchParams(window.location.search);
+      document.getElementById("accountId").value = params.get("accountId") || DEFAULTS.accountId;
+      document.getElementById("sessionSecret").value = params.get("sessionSecret") || DEFAULTS.sessionSecret;
+      document.getElementById("clientId").value = params.get("clientId") || DEFAULTS.clientId;
+    })();
+
+    const commonSdkProps = {
+      name: 'collectAccountInformation',
+      environment: DEFAULTS.environment,
+      onExit: () => alert('exit'),
+      onError: (err) => console.error(err),
+      onComplete: ({ referenceId, userInputs, preset }) => {
+        alert(`refe
