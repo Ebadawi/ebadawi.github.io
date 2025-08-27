@@ -1,96 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plugin Loader</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Veem – Unified Plugin Tester (Multi-Env)</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/veem-web-sdk@^0/umd/index.min.js" type="application/javascript"></script>
   <style>
-    :root {
-      --primary-color: #0057ff;
-      --text-color: #212121;
-      --background-color: #f9f9f9;
-      --button-bg: #0057ff;
-      --button-color: #ffffff;
-      --button-hover-bg: #0041cc;
-    }
-
-    body {
-      margin: 0;
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      background-color: var(--background-color);
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-
-    header {
-      background-color: white;
-      border-bottom: 1px solid #e0e0e0;
-      padding: 1rem 2rem;
-      text-align: center;
-      color: var(--text-color);
-    }
-
-    header h1 {
-      margin: 0;
-      font-weight: 600;
-      font-size: 1.5rem;
-    }
-
-    .button-container {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      padding: 1rem 2rem;
-      background-color: white;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    button {
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      font-weight: 500;
-      background-color: var(--button-bg);
-      color: var(--button-color);
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: var(--button-hover-bg);
-    }
-
-    .iframe-container {
-      flex: 1;
-      padding: 0;
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
+    :root { --border:#e5e7eb; --card:#fff; --bg:#f9fafb; --btn:#0057ff; --btn-hover:#0041cc; --text:#1a1a1a; --muted:#6b7280; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:'Roboto',system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    header{background:var(--card);border-bottom:1px solid var(--border);padding:1rem 1.5rem}
+    h1{margin:0;font-size:1.25rem}
+    .grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:.75rem;padding:1rem 1.5rem;background:var(--card);border-bottom:1px solid var(--border);align-items:center}
+    .grid label{text-align:right;color:var(--muted);font-size:.9rem}
+    .grid input,.grid select{width:100%;padding:.55rem .65rem;border:1px solid #d1d5db;border-radius:.5rem;font-size:.95rem;background:#fff}
+    .actions{display:flex;flex-wrap:wrap;gap:.75rem;padding:.75rem 1.5rem 1.25rem;background:var(--card);border-bottom:1px solid var(--border)}
+    button{border:none;border-radius:.5rem;padding:.6rem 1rem;font-weight:600;cursor:pointer}
+    .primary{background:var(--btn);color:#fff}
+    .primary:hover{background:var(--btn-hover)}
+    #layout{display:grid;grid-template-columns:1fr 360px;gap:1rem;max-width:1200px;margin:1rem auto;padding:0 1rem}
+    #plugin-card,#result-card{background:var(--card);border:1px solid var(--border);border-radius:.75rem}
+    #plugin-card{min-height:240px;padding:1rem}
+    #plugin-target{min-height:200px}
+    #result-card header{padding:.75rem 1rem;border-bottom:1px solid var(--border);font-weight:700}
+    #result{padding:1rem;max-height:420px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:.9rem;white-space:pre-wrap}
   </style>
 </head>
 <body>
-  <header>
-    <h1>Plugin Loader</h1>
-  </header>
-  <div class="button-container">
-    <button onclick="loadPlugin('https://ebadawi.github.io/Project1/card.html')">Card Plugin</button>
-    <button onclick="loadPlugin('https://ebadawi.github.io/Project1/bank.html')">Bank Plugin</button>
-    <button onclick="loadPlugin('https://ebadawi.github.io/Project1/boi.html')">BOI Plugin</button>
+  <header><h1>Veem – Unified Plugin Tester</h1></header>
+
+  <div class="grid">
+    <label for="env">environment</label>
+    <select id="env">
+      <option value="sandbox">sandbox</option>
+      <option value="qa">qa</option>
+    </select>
+
+    <label for="accountId">accountId</label>
+    <input id="accountId" type="number" placeholder="accountId" />
+
+    <label for="sessionSecret">sessionSecret</label>
+    <input id="sessionSecret" type="text" placeholder="sessionSecret" />
+
+    <label for="clientId">clientId</label>
+    <input id="clientId" type="text" placeholder="clientId" />
   </div>
-  <div class="iframe-container">
-    <iframe id="pluginFrame" src=""></iframe>
+
+  <div class="actions">
+    <button class="primary" id="btn-card">Collect card info</button>
+    <button class="primary" id="btn-bank">Collect bank info</button>
+    <button class="primary" id="btn-boi">Collect BOI info</button>
+    <button class="primary" id="btn-onboard">Collect onboarding account info</button>
+  </div>
+
+  <div id="layout">
+    <div id="plugin-card">
+      <div id="plugin-target"><!-- one plugin at a time --></div>
+    </div>
+    <aside id="result-card">
+      <header>Latest callback result</header>
+      <div id="result">No results yet.</div>
+    </aside>
   </div>
 
   <script>
-    function loadPlugin(url) {
-      document.getElementById('pluginFrame').src = url;
+    // Per-environment presets (your provided values)
+    const ENV_PRESETS = {
+      sandbox: {
+        accountId: "973226",
+        sessionSecret: "b45091d6550ec6656bb0a294b5859057",
+        clientId: "testQAwhish-5XG09EeqyV",
+      },
+      qa: {
+        accountId: "391558",
+        sessionSecret: "7cdcd2682c5250d557011a6516ce6d40",
+        clientId: "4c055b2e-8553-4bfe-ad27-8b5fd10ba6a3",
+      }
+    };
+
+    // Visible defaults (initial env = sandbox)
+    const DEFAULT_ENV = "sandbox";
+
+    // Prefill from URL if present, otherwise from env presets
+    (function prefill() {
+      const p = new URLSearchParams(location.search);
+      const envParam = p.get("env");
+      env.value = envParam && ENV_PRESETS[envParam] ? envParam : DEFAULT_ENV;
+
+      const preset = ENV_PRESETS[env.value];
+
+      accountId.value     = p.get("accountId")    || preset.accountId;
+      sessionSecret.value = p.get("sessionSecret")|| preset.sessionSecret;
+      clientId.value      = p.get("clientId")     || preset.clientId;
+    })();
+
+    // If environment changes, load that env's presets into inputs
+    env.addEventListener('change', () => {
+      const preset = ENV_PRESETS[env.value];
+      accountId.value = preset.accountId;
+      sessionSecret.value = preset.sessionSecret;
+      clientId.value = preset.clientId;
+
+      // If a plugin is open, we do NOT auto-relaunch or clear results.
+      // You can click a plugin button to relaunch with the new env; that will clear prior plugin + result.
+    });
+
+    // One active instance at a time
+    let currentInstance = null;
+
+    // Helpers
+    const renderResult = (payload) => {
+      const el = document.getElementById('result');
+      el.textContent = payload ? (typeof payload === 'string' ? payload : JSON.stringify(payload, null, 2)) : '';
+    };
+
+    const clearResultPanel = () => renderResult('');
+
+    const buildConfig = () => ({
+      accountId: Number(accountId.value),
+      sessionSecret: sessionSecret.value.trim(),
+      clientId: clientId.value.trim(),
+      style: {
+        typography: {
+          fontFamily: 'Roboto', color: '#1A1A1A', weight: 400, fontSize: 14,
+          error: { fontFamily: 'Roboto', fontSize: 14, weight: 400, color: '#B6353B' },
+        },
+        header: { fontFamily: 'Roboto', fontSize: 22, weight: 700 },
+        input: {
+          backgroundColor: '#FFF', borderColor: '#B0B7BF', placeholderColor: '#B0B7BF', height: 36, borderRadius: 2,
+          paddingTop: 8, paddingRight: 8, paddingBottom: 8, paddingLeft: 16,
+          error: {
+            backgroundColor: '#FFEBEC', borderColor: '#B6353B', placeholderColor: '#B0B7BF',
+            height: 36, borderRadius: 2, paddingTop: 8, paddingRight: 8, paddingBottom: 8, paddingLeft: 16,
+          },
+        },
+        button: {
+          height: 40, minWidth: 100,
+          padding: { top: 10, right: 24, bottom: 10, left: 24 },
+          textTransform: 'capitalize', backgroundColor: '#1A1A1A', color: '#FFF',
+          fontFamily: 'Roboto', fontSize: 16, weight: 600, borderRadius: 4,
+          border: { color: '#1A1A1A', width: 1, style: 'solid' },
+          hover: { backgroundColor: '#333333', color: '#FFF' },
+          disabled: { backgroundColor: '#E0E0E0', color: '#B0B7BF' },
+        },
+      },
+    });
+
+    const genReferenceId = () =>
+      'ref-' + ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+      );
+
+    const freshenTarget = () => {
+      // Keep exactly one mount node; replace it on each plugin switch
+      const holder = document.getElementById('plugin-target');
+      holder.innerHTML = '';
+      const div = document.createElement('div');
+      div.id = 'plugin-mount';
+      holder.appendChild(div);
+      return '#plugin-mount';
+    };
+
+    const baseProps = () => ({
+      name: 'collectAccountInformation',
+      environment: env.value, // 'sandbox' or 'qa'
+      onError: (err) => { console.error(err); renderResult({ error: String(err?.message || err) }); },
+    });
+
+    function launchPlugin(configBuilder) {
+      // When another plugin is clicked: clear old result + close old plugin
+      clearResultPanel();
+
+      if (currentInstance && typeof currentInstance.destroy === 'function') {
+        try { currentInstance.destroy(); } catch (e) { console.warn('destroy failed', e); }
+        currentInstance = null;
+      }
+
+      const target = freshenTarget();
+      const configuration = configBuilder(buildConfig());
+      const referenceId = genReferenceId();
+
+      currentInstance = new Veem.WebSDK({
+        ...baseProps(),
+        target,
+        referenceId,
+        preset: { amount: 500, currencyCode: 'USD' },
+        // Keep plugin mounted on complete
+        onComplete: ({ referenceId, userInputs, preset }) => {
+          renderResult({ status: 'complete', referenceId, preset, userInputs, environment: env.value });
+          // Do not destroy here
+        },
+        onExit: () => {
+          renderResult({ status: 'exit', environment: env.value });
+          currentInstance = null; // allow relaunch
+        },
+        configuration
+      });
     }
+
+    // Buttons
+    document.getElementById('btn-card').addEventListener('click', () =>
+      launchPlugin(cfg => ({ ...cfg, paymentOptions: [{ type: 'Card', header: 'Customized header' }] }))
+    );
+
+    document.getElementById('btn-bank').addEventListener('click', () =>
+      launchPlugin(cfg => ({ ...cfg, paymentOptions: [{ type: 'Bank', header: 'Bank Account Information' }] }))
+    );
+
+    document.getElementById('btn-boi').addEventListener('click', () =>
+      launchPlugin(cfg => ({ ...cfg, collectedInformationOptions: [{ type: 'BeneficialOwnershipInformation', header: 'Beneficial Ownership Information' }] }))
+    );
+
+    document.getElementById('btn-onboard').addEventListener('click', () =>
+      launchPlugin(cfg => ({ ...cfg, collectedInformationOptions: [{ type: 'OnboardingInformation', header: 'Complete Your Account Information' }] }))
+    );
   </script>
 </body>
 </html>
