@@ -201,7 +201,15 @@
 
     // Buttons
     document.getElementById('btn-card').addEventListener('click', () =>
-      launchPlugin(cfg => ({ ...cfg, paymentOptions: [{ type: 'Card', header: 'Customized header' }] }))
+      //launchPlugin(cfg => ({ ...cfg, paymentOptions: [{ type: 'Card', header: 'Customized header' }] }))
+      launchPlugin(cfg => ({ ...cfg, paymentOptions: [{ type: 'Card', header: 'Customized header', placeholders: { 
+    name: 'Give us your name',
+    lastName: 'Give your last name',
+    cardNumber: 'such as: 1234 5678 9012 3456', 
+    expirationMonth: 'Month', 
+    expirationYear: 'Year', 
+    securityCode: 'CVV: Card Verification Value'
+  } }] }))
     );
 
     document.getElementById('btn-bank').addEventListener('click', () =>
