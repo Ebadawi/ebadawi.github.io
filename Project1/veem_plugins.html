@@ -35,6 +35,7 @@
     <select id="env">
       <option value="sandbox">sandbox</option>
       <option value="qa">qa</option>
+      <option value="production">production</option>
     </select>
 
     <label for="accountId">accountId</label>
@@ -76,6 +77,13 @@
         accountId: "391558",
         sessionSecret: "7cdcd2682c5250d557011a6516ce6d40",
         clientId: "4c055b2e-8553-4bfe-ad27-8b5fd10ba6a3",
+      },
+      production: {
+        accountId: "1691334", // add your production accountId here
+        sessionSecret: "3651237067ea42e21cf08ac207c25f4e", // add your production sessionSecret here
+        clientId: "", // add your production clientId here
+        apiUrl: "https://api.veem.com",
+        appUrl: "https://apps.veem.com"
       }
     };
 
@@ -101,9 +109,6 @@
       accountId.value = preset.accountId;
       sessionSecret.value = preset.sessionSecret;
       clientId.value = preset.clientId;
-
-      // If a plugin is open, we do NOT auto-relaunch or clear results.
-      // You can click a plugin button to relaunch with the new env; that will clear prior plugin + result.
     });
 
     // One active instance at a time
@@ -153,7 +158,6 @@
       );
 
     const freshenTarget = () => {
-      // Keep exactly one mount node; replace it on each plugin switch
       const holder = document.getElementById('plugin-target');
       holder.innerHTML = '';
       const div = document.createElement('div');
@@ -164,36 +168,30 @@
 
     const baseProps = () => ({
       name: 'collectAccountInformation',
-      environment: env.value, // 'sandbox' or 'qa'
+      environment: env.value, // 'sandbox', 'qa', or 'production'
       onError: (err) => { console.error(err); renderResult({ error: String(err?.message || err) }); },
     });
 
     function launchPlugin(configBuilder) {
-      // When another plugin is clicked: clear old result + close old plugin
       clearResultPanel();
-
       if (currentInstance && typeof currentInstance.destroy === 'function') {
         try { currentInstance.destroy(); } catch (e) { console.warn('destroy failed', e); }
         currentInstance = null;
       }
-
       const target = freshenTarget();
       const configuration = configBuilder(buildConfig());
       const referenceId = genReferenceId();
-
       currentInstance = new Veem.WebSDK({
         ...baseProps(),
         target,
         referenceId,
         preset: { amount: 500, currencyCode: 'USD' },
-        // Keep plugin mounted on complete
         onComplete: ({ referenceId, userInputs, preset }) => {
           renderResult({ status: 'complete', referenceId, preset, userInputs, environment: env.value });
-          // Do not destroy here
         },
         onExit: () => {
           renderResult({ status: 'exit', environment: env.value });
-          currentInstance = null; // allow relaunch
+          currentInstance = null;
         },
         configuration
       });
@@ -201,15 +199,14 @@
 
     // Buttons
     document.getElementById('btn-card').addEventListener('click', () =>
-      //launchPlugin(cfg => ({ ...cfg, paymentOptions: [{ type: 'Card', header: 'Customized header' }] }))
       launchPlugin(cfg => ({ ...cfg, paymentOptions: [{ type: 'Card', header: 'Customized header', placeholders: { 
-    name: 'Give us your name',
-    lastName: 'Give your last name',
-    cardNumber: 'such as: 1234 5678 9012 3456', 
-    expirationMonth: 'Month', 
-    expirationYear: 'Year', 
-    securityCode: 'CVV: Card Verification Value'
-  } }] }))
+        name: 'Give us your name',
+        lastName: 'Give your last name',
+        cardNumber: 'such as: 1234 5678 9012 3456', 
+        expirationMonth: 'Month', 
+        expirationYear: 'Year', 
+        securityCode: 'CVV: Card Verification Value'
+      } }] }))
     );
 
     document.getElementById('btn-bank').addEventListener('click', () =>
