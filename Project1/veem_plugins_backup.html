@@ -33,8 +33,9 @@
   <div class="grid">
     <label for="env">environment</label>
     <select id="env">
+      <option value="dev">dev</option>
+       <option value="qa">qa</option>
       <option value="sandbox">sandbox</option>
-      <option value="qa">qa</option>
       <option value="production">production</option>
     </select>
 
@@ -85,6 +86,13 @@
         clientId: "", // add your production clientId here
         apiUrl: "https://api.veem.com",
         appUrl: "https://apps.veem.com"
+      },
+      dev: {
+        accountId: "439218",
+        sessionSecret: "19778e855d1f503dca8a400c28136125",
+        clientId: "<your dev clientId>",
+        apiUrl: "https://api.dev.veem.com",
+        appUrl: "https://apps.dev.veem.com"
       }
     };
 
