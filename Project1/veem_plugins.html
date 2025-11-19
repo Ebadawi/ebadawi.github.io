@@ -222,12 +222,12 @@
       launchPlugin(cfg => ({ ...cfg, collectedInformationOptions: [{ type: 'OnboardingInformation', header: 'Complete Your Account Information' }] }))
     );
 
-   // document.getElementById('btn-idcheck').addEventListener('click', () =>
-     // launchPlugin(cfg => ({ ...cfg, collectedInformationOptions: [{ type: 'IdentificationDocumentInformation', header: 'Complete Your ID' }]}))
-    //);
     document.getElementById('btn-idcheck').addEventListener('click', () =>
-    launchPlugin(cfg => ({ ...cfg, collectedInformationOptions: [{ type: 'identityCheck', header: 'Identity Check' }]}))
+      launchPlugin(cfg => ({ ...cfg, collectedInformationOptions: [{ type: 'IdentificationDocumentInformation', header: 'Complete Your ID' }]}))
     );
+   // document.getElementById('btn-idcheck').addEventListener('click', () =>
+    //launchPlugin(cfg => ({ ...cfg, collectedInformationOptions: [{ type: 'identityCheck', header: 'Identity Check' }]}))
+    //);
   </script>
 </body>
 </html>
