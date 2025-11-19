@@ -53,6 +53,7 @@
     <button class="primary" id="btn-bank">Collect bank info</button>
     <button class="primary" id="btn-boi">Collect BOI info</button>
     <button class="primary" id="btn-onboard">Collect onboarding account info</button>
+    <button class="primary" id="btn-idcheck">Collect ID document</button>
   </div>
 
   <div id="layout">
@@ -220,6 +221,13 @@
     document.getElementById('btn-onboard').addEventListener('click', () =>
       launchPlugin(cfg => ({ ...cfg, collectedInformationOptions: [{ type: 'OnboardingInformation', header: 'Complete Your Account Information' }] }))
     );
+
+    document.getElementById('btn-idcheck').addEventListener('click', () =>
+      launchPlugin(cfg => ({ ...cfg, collectedInformationOptions: [{ type: 'IdentificationDocumentInformation', header: 'Complete Your ID' }]}))
+    );
+   // document.getElementById('btn-idcheck').addEventListener('click', () =>
+    //launchPlugin(cfg => ({ ...cfg, collectedInformationOptions: [{ type: 'identityCheck', header: 'Identity Check' }]}))
+    //);
   </script>
 </body>
 </html>
