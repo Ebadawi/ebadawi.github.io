@@ -25,6 +25,15 @@
     #plugin-target{min-height:200px}
     #result-card header{padding:.75rem 1rem;border-bottom:1px solid var(--border);font-weight:700}
     #result{padding:1rem;max-height:420px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:.9rem;white-space:pre-wrap}
+    @media (max-width: 768px) {
+          #layout {
+                 display: flex;
+                 flex-direction: column;
+            }
+          #plugin-card {
+                 min-width: 50%;
+            }
+        }
   </style>
 </head>
 <body>
