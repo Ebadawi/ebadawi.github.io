@@ -63,6 +63,7 @@
     <button class="primary" id="btn-boi">Collect BOI info</button>
     <button class="primary" id="btn-onboard">Collect onboarding account info</button>
     <button class="primary" id="btn-idcheck">Collect ID document</button>
+    <button class="primary" id="btn-payee">Collect payee info</button>
   </div>
 
   <div id="layout">
@@ -237,6 +238,11 @@
    // document.getElementById('btn-idcheck').addEventListener('click', () =>
     //launchPlugin(cfg => ({ ...cfg, collectedInformationOptions: [{ type: 'identityCheck', header: 'Identity Check' }]}))
     //);
+
+    document.getElementById('btn-payee').addEventListener('click', () => {
+      // Redirect to dedicated payee plugin page
+      window.location.href = 'veem_payee_plugin.html';
+    });
   </script>
 </body>
 </html>
