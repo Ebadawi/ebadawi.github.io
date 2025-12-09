@@ -92,7 +92,9 @@
         accountId: "973226",
       },
       qa: {
-        accountId: "391558",
+        accountId: "448525",
+        paymentId: "1458166",
+        paymentSecret: "fde77d8c-6198-42fa-8f2c-3c0bacf6ce8b"
       },
       production: {
         accountId: "1691334", // add your production accountId here
@@ -169,7 +171,10 @@
         },
         configuration: {
           accountId: Number(accountId.value),
-          fundingMethodOptions: { hideWallet: true },
+          fundingMethodOptions: { hideWallet: true, hideVirtualCard: true, },
+          payeePluginOptions: {
+            hideVirtualCardPage: true,
+          },
         },
         onComplete: ({ referenceId, userInputs, preset }) => {
           renderResult({ status: 'complete', referenceId, preset, userInputs, environment: env.value });
