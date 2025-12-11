@@ -171,10 +171,7 @@
         },
         configuration: {
           accountId: Number(accountId.value),
-          fundingMethodOptions: { hideWallet: true, hideVirtualCard: true, },
-          payeePluginOptions: {
-            hideVirtualCardPage: true,
-          },
+          fundingMethodOptions: { hideWallet: true, },
         },
         onComplete: ({ referenceId, userInputs, preset }) => {
           renderResult({ status: 'complete', referenceId, preset, userInputs, environment: env.value });
