@@ -15,6 +15,9 @@
     .grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:.75rem;padding:1rem 1.5rem;background:var(--card);border-bottom:1px solid var(--border);align-items:center}
     .grid label{text-align:right;color:var(--muted);font-size:.9rem}
     .grid input,.grid select{width:100%;padding:.55rem .65rem;border:1px solid #d1d5db;border-radius:.5rem;font-size:.95rem;background:#fff}
+    .grid .grid-full{grid-column:1/-1}
+    .grid label.checkbox{display:flex;gap:.5rem;align-items:center;justify-content:flex-start;text-align:left;color:var(--muted);font-size:.95rem}
+    .grid label.checkbox input{width:auto;padding:0}
     .actions{display:flex;flex-wrap:wrap;gap:.75rem;padding:.75rem 1.5rem 1.25rem;background:var(--card);border-bottom:1px solid var(--border)}
     button{border:none;border-radius:.5rem;padding:.6rem 1rem;font-weight:600;cursor:pointer}
     .primary{background:var(--btn);color:#fff}
@@ -55,6 +58,13 @@
 
     <label for="clientId">clientId</label>
     <input id="clientId" type="text" placeholder="clientId" />
+
+    <div class="grid-full">
+      <label class="checkbox" for="includeAccountPresets">
+        <input id="includeAccountPresets" type="checkbox" />
+        include account presets
+      </label>
+    </div>
   </div>
 
   <div class="actions">
@@ -185,6 +195,39 @@
       onError: (err) => { console.error(err); renderResult({ error: String(err?.message || err) }); },
     });
 
+    const buildPreset = () => {
+      const preset = { amount: 500, currencyCode: 'USD' };
+      if (includeAccountPresets && includeAccountPresets.checked) {
+        preset.account = {
+          type: 'Personal',
+          //countryCode: 'US',
+          business: {
+            entity: 'SoleProprietorship',
+            taxId: '999-99-9999',
+            address: {
+              street: '123 Main St',
+              city: 'San Francisco',
+              stateProvince: 'CA',
+              postalCode: '94105',
+              countryCode: 'US',
+            },
+            displayName: 'John Doe Consulting',
+            industry: "Business Services",
+            subIndustry: "Affiliate Marketing",
+            occupation: "Software Engineer",
+          },
+          contact: {
+            countryDialCode: '+1',
+            phoneNumber: '2027524129',
+            firstName: 'John',
+            lastName: 'Doe',
+            dob: "12/20/2007",
+          },
+        };
+      }
+      return preset;
+    };
+
     function launchPlugin(configBuilder) {
       clearResultPanel();
       if (currentInstance && typeof currentInstance.destroy === 'function') {
@@ -198,7 +241,7 @@
         ...baseProps(),
         target,
         referenceId,
-        preset: { amount: 500, currencyCode: 'USD' },
+        preset: buildPreset(),
         onComplete: ({ referenceId, userInputs, preset }) => {
           renderResult({ status: 'complete', referenceId, preset, userInputs, environment: env.value });
         },
