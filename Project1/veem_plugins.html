@@ -196,7 +196,7 @@
     });
 
     const buildPreset = () => {
-      const preset = { amount: 500, currencyCode: 'USD' };
+      const preset = { amount: 500, currencyCode: 'USD', businessEntity: 'PersonalUse', };
       if (includeAccountPresets && includeAccountPresets.checked) {
         preset.account = {
           type: 'Personal',
