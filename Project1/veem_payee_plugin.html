@@ -56,18 +56,13 @@
     </div>
 
     <div class="fieldGroup">
-      <label for="accountId">accountId</label>
-      <input id="accountId" type="number" placeholder="accountId" />
+      <label for="claimLink">claimLink</label>
+      <input id="claimLink" type="text" placeholder="claimLink" />
     </div>
 
     <div class="fieldGroup">
-      <label for="paymentId">paymentId</label>
-      <input id="paymentId" type="text" placeholder="paymentId" />
-    </div>
-
-    <div class="fieldGroup">
-      <label for="paymentSecret">paymentSecret</label>
-      <input id="paymentSecret" type="text" placeholder="paymentSecret" />
+      <label for="email">email</label>
+      <input id="email" type="email" placeholder="payee email" />
     </div>
   </div>
 
@@ -86,45 +81,17 @@
   </div>
 
   <script>
-    // Per-environment presets for payee plugin
-    const ENV_PRESETS = {
-      sandbox: {
-        accountId: "973226",
-      },
-      qa: {
-        accountId: "448525",
-        paymentId: "1458166",
-        paymentSecret: "fde77d8c-6198-42fa-8f2c-3c0bacf6ce8b"
-      },
-      production: {
-        accountId: "1691334", // add your production accountId here
-        apiUrl: "https://api.veem.com",
-        appUrl: "https://apps.veem.com"
-      }
-    };
-
     // Visible defaults (initial env = sandbox)
     const DEFAULT_ENV = "sandbox";
 
-    // Prefill from URL if present, otherwise from env presets
+    // Prefill from URL if present
     (function prefill() {
       const p = new URLSearchParams(location.search);
       const envParam = p.get("env");
-      env.value = envParam && ENV_PRESETS[envParam] ? envParam : DEFAULT_ENV;
-
-      const preset = ENV_PRESETS[env.value];
-
-      accountId.value = p.get("accountId") || preset.accountId;
-      paymentId.value = p.get("paymentId") || '987654-Payment';
-      paymentSecret.value = p.get("paymentSecret") || 'e10bf1ea-9572-42e8-9e87-037ec7ad1f3b';
+      env.value = envParam ? envParam : DEFAULT_ENV;
+      claimLink.value = p.get("claimLink") || "";
+      email.value = p.get("email") || "";
     })();
-
-    // If environment changes, load that env's presets into inputs
-    env.addEventListener('change', () => {
-      const preset = ENV_PRESETS[env.value];
-      accountId.value = preset.accountId;
-      // paymentId and paymentSecret remain unchanged
-    });
 
     // One active instance at a time
     let currentInstance = null;
@@ -166,12 +133,8 @@
         target,
         referenceId,
         preset: {
-          paymentId: paymentId.value.trim() || '987654-Payment',
-          secret: paymentSecret.value.trim() || 'e10bf1ea-9572-42e8-9e87-037ec7ad1f3b',
-        },
-        configuration: {
-          accountId: Number(accountId.value),
-          fundingMethodOptions: { hideWallet: true, },
+          claimLink: claimLink.value.trim(),
+          email: email.value.trim(),
         },
         onComplete: ({ referenceId, userInputs, preset }) => {
           renderResult({ status: 'complete', referenceId, preset, userInputs, environment: env.value });
