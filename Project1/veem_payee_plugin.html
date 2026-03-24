@@ -52,17 +52,18 @@
         <option value="sandbox">sandbox</option>
         <option value="qa">qa</option>
         <option value="production">production</option>
+        <option value="localqa">localqa</option>
       </select>
     </div>
 
     <div class="fieldGroup">
       <label for="claimLink">claimLink</label>
-      <input id="claimLink" type="text" placeholder="claimLink" />
+      <input id="claimLink" type="text" placeholder="claimLink" placeholder="https://api.qa-us-west-2.veem.com/api/c/shortCode"/>
     </div>
 
     <div class="fieldGroup">
       <label for="email">email</label>
-      <input id="email" type="email" placeholder="payee email" />
+      <input id="email" type="email" placeholder="payee email" placeholder="payee@example.com"/>
     </div>
   </div>
 
@@ -82,7 +83,7 @@
 
   <script>
     // Visible defaults (initial env = sandbox)
-    const DEFAULT_ENV = "sandbox";
+    const DEFAULT_ENV = "qa";
 
     // Prefill from URL if present
     (function prefill() {
@@ -133,8 +134,8 @@
         target,
         referenceId,
         preset: {
-          claimLink: claimLink.value.trim(),
-          email: email.value.trim(),
+          claimLink: claimLink?.value?.trim(),
+          email: email?.value?.trim(),
         },
         onComplete: ({ referenceId, userInputs, preset }) => {
           renderResult({ status: 'complete', referenceId, preset, userInputs, environment: env.value });
